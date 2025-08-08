@@ -11,6 +11,7 @@ import { ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const subjectFields = [
   'math',
@@ -62,7 +63,7 @@ const Reports = () => {
 
   const fetchStudents = async (className) => {
     try {
-      const res = await axios.get(`http://localhost:5000/grades/${className}`);
+      const res = await axios.get(`${Api_url}/grades/${className}`);
       setStudents(res.data);
     } catch (err) {
       toast.error('Failed to fetch students');
@@ -94,7 +95,7 @@ const Reports = () => {
       const average = Math.round(totalMarks / marks.length);
       const grade = calculateGrade(marks);
 
-      await axios.put(`http://localhost:5000/grades/${editingStudent._id}`, {
+      await axios.put(`${Api_url}/grades/${editingStudent._id}`, {
         ...editMarks,
         totalMarks,
         average,
@@ -138,7 +139,7 @@ const Reports = () => {
     };
 
     try {
-      await axios.post('http://localhost:5000/grades', formattedStudent);
+      await axios.post(`${Api_url}/grades`, formattedStudent);
       setShowAddModal(false);
       setNewStudent({
         name: '',
@@ -160,7 +161,7 @@ const Reports = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/grades/${id}`);
+      await axios.delete(`${Api_url}/grades/${id}`);
       toast.success('Student deleted');
       fetchStudents(selectedClass);
     } catch (err) {

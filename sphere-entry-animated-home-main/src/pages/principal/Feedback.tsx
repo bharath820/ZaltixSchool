@@ -11,6 +11,7 @@ import {
 import { ArrowLeft, MessageSquare, Star } from 'lucide-react';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import { toast } from '@/components/ui/use-toast';
+import {Api_url} from '../config/config.js'
 
 type TeacherFeedbackType = {
   _id: string;
@@ -45,8 +46,8 @@ const Feedback = () => {
       try {
         const url =
           filterType === 'Teacher'
-            ? 'http://localhost:5000/AddFeedback'
-            : 'http://localhost:5000/studentfeedback';
+            ? `${Api_url}/AddFeedback`
+            : `${Api_url}/studentfeedback`;
         const res = await axios.get<FeedbackType[]>(url);
         setFeedbackData(res.data || []); // Fallback if backend returns null
       } catch (err) {

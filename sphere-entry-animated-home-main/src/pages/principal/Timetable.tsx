@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, Download, Calendar } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
+import {Api_url} from '../config/config.js'
 
 const TimetableView = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const TimetableView = () => {
 
   const fetchClassTimetable = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/timetable/${selectedClass}`);
+      const res = await axios.get(`${Api_url}/timetable/${selectedClass}`);
       const entries = res.data?.data?.entries || {};
       const normalized = {};
       days.forEach(day => {
@@ -57,7 +58,7 @@ const TimetableView = () => {
 
   const fetchTeacherTimetable = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/timetable');
+      const res = await axios.get(`${Api_url}/timetable`);
       const timetables = res.data?.data || [];
       const schedule = {};
       days.forEach(day => schedule[day] = Array(timeSlots.length).fill('Break'));

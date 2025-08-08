@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ArrowLeft, Plus, Upload, Download, Edit, Trash2, BookOpen } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const EBooks = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const EBooks = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/ebooks');
+      const res = await fetch(`${Api_url}/api/ebooks`);
       const data = await res.json();
       setBooks(data.data || data);
     } catch (err) {
@@ -44,8 +45,8 @@ const EBooks = () => {
 
     const method = isEdit ? 'PUT' : 'POST';
     const url = isEdit
-      ? `http://localhost:5000/api/ebooks/${editId}`
-      : 'http://localhost:5000/api/ebooks';
+      ? `${Api_url}/api/ebooks/${editId}`
+      : `${Api_url}/api/ebooks`;
 
     try {
       await fetch(url, { method, body: form });
@@ -60,7 +61,7 @@ const EBooks = () => {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/ebooks/${id}`, { method: 'DELETE' });
+      await fetch(`${Api_url}/api/ebooks/${id}`, { method: 'DELETE' });
       toast.info('Book deleted successfully');
       fetchBooks();
     } catch (err) {

@@ -12,13 +12,14 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.anjalidev_123.Eshcul"
-    },
+  "adaptiveIcon": {
+    "foregroundImage": "./assets/images/adaptive-icon.png",
+    "backgroundColor": "#ffffff"
+  },
+  "edgeToEdgeEnabled": true,
+  "package": "com.anjalidev_123.Eshcul"
+},
+
     "web": {
       "bundler": "metro",
       "output": "static",

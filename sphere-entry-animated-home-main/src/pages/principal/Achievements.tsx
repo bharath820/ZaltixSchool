@@ -7,13 +7,14 @@ import { ArrowLeft, Trophy, Medal, Star, Award } from 'lucide-react';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const Achievements = () => {
   const [achievements, setAchievements] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/achievements")
+    fetch(`${Api_url}/achievements`)
       .then(res => res.json())
       .then(data => {
         setAchievements(data);

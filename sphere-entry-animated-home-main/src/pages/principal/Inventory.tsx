@@ -9,6 +9,7 @@ import AnimatedBackground from '@/components/AnimatedBackground';
 import AddStockModal from '@/components/AddStockModal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 interface InventoryItem {
   _id: string;
@@ -33,7 +34,7 @@ const Inventory = () => {
 
   const fetchInventory = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/Addstock');
+      const res = await axios.get(`${Api_url}/Addstock`);
       setInventoryData(res.data);
     } catch (err) {
       console.error('Failed to fetch inventory:', err);
@@ -42,7 +43,7 @@ const Inventory = () => {
 
   const handleAddStock = async (newStock: InventoryItem) => {
     try {
-      const res = await axios.post('http://localhost:5000/Addstock', newStock);
+      const res = await axios.post(`${Api_url}/Addstock`, newStock);
       setInventoryData(prev => [...prev, res.data]);
       toast.success('✅ Stock added successfully!');
     } catch (err) {
@@ -67,7 +68,7 @@ const Inventory = () => {
   const handleSave = async () => {
     if (!editedItem || !editingId) return;
     try {
-      const res = await axios.put(`http://localhost:5000/Addstock/${editingId}`, editedItem);
+      const res = await axios.put(`${Api_url} /Addstock/${editingId}`, editedItem);
       const updatedItem = res.data;
       setInventoryData(prev =>
         prev.map(item => (item._id === editingId ? updatedItem : item))
@@ -83,7 +84,7 @@ const Inventory = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/Addstock/${id}`);
+      await axios.delete(`${Api_url} /Addstock/${id}`);
       setInventoryData(prev => prev.filter(item => item._id !== id));
       toast.success('🗑️ Item deleted successfully!');
     } catch (err) {

@@ -8,6 +8,7 @@ import { ArrowLeft, Plus, Calendar, Edit, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const Diary = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Diary = () => {
   useEffect(() => {
     const fetchEntries = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/AddDiary');
+        const res = await axios.get(`${Api_url}/AddDiary`);
         setEntries(res.data);
       } catch (err) {
         console.error('Error fetching entries:', err);
@@ -40,7 +41,7 @@ const Diary = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/AddDiary/${editingId}`, formData);
+        await axios.put(`${Api_url}/AddDiary/${editingId}`, formData);
         setEntries((prev) =>
           prev.map((entry) =>
             entry._id === editingId ? { ...entry, ...formData } : entry
@@ -48,7 +49,7 @@ const Diary = () => {
         );
         toast.success('Entry updated successfully!');
       } else {
-        const response = await axios.post(`http://localhost:5000/AddDiary`, formData);
+        const response = await axios.post(`${Api_url}/AddDiary`, formData);
         setEntries((prev) => [...prev, response.data]);
         toast.success('Entry added successfully!');
       }
@@ -74,7 +75,7 @@ const Diary = () => {
   // Delete entry
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/AddDiary/${id}`);
+      await axios.delete(`${Api_url}/AddDiary/${id}`);
       setEntries((prev) => prev.filter((entry) => entry._id !== id));
       toast.info('Entry deleted successfully');
     } catch (err) {

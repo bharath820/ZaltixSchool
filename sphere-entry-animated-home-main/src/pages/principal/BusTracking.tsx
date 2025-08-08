@@ -9,6 +9,7 @@ import AnimatedBackground from '@/components/AnimatedBackground';
 import AddBusForm from '@/components/AddBusForm';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const BusTracking = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const BusTracking = () => {
   const fetchBuses = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/addbus');
+      const res = await axios.get(`${Api_url}/addbus`);
       setBusRoutes(res.data);
     } catch (err) {
       console.error('Error fetching buses:', err);
@@ -41,7 +42,7 @@ const BusTracking = () => {
 
   const handleDeleteBus = async (busId: string) => {
     try {
-      await axios.delete(`http://localhost:5000/addbus/${busId}`);
+      await axios.delete(`${Api_url}/addbus/${busId}`);
       toast.success('🗑️ Bus deleted successfully!', { position: 'top-right' });
       fetchBuses();
     } catch (err) {

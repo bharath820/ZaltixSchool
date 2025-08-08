@@ -14,6 +14,7 @@ import * as XLSX from 'xlsx';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const AttendanceAnalytics = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const AttendanceAnalytics = () => {
     async function fetchClasses() {
       try {
         setLoading(true);
-        const res = await axios.get('http://localhost:5000/attendance/classes');
+        const res = await axios.get(`${Api_url}/attendance/classes`);
         setClassList(res.data);
       } catch (err) {
         toast.error('Failed to fetch class list');
@@ -60,16 +61,16 @@ const AttendanceAnalytics = () => {
         const cls = selectedClass === 'all' ? undefined : selectedClass;
 
         const [studentRes, statsRes, classAttRes, chartRes] = await Promise.all([
-          axios.get('http://localhost:5000/attendance/students-with-attendance', {
+          axios.get(`${Api_url}/attendance/students-with-attendance`, {
             params: { date, class: cls }
           }),
-          axios.get('http://localhost:5000/attendance/attendance-stats', {
+          axios.get(`${Api_url}/attendance/attendance-stats`, {
             params: { date, class: cls }
           }),
-          axios.get('http://localhost:5000/attendance/class-attendance-summary', {
+          axios.get(`${Api_url}/attendance/class-attendance-summary`, {
             params: { date }
           }),
-          axios.get('http://localhost:5000/attendance/attendance-trends', {
+          axios.get(`${Api_url}/attendance/attendance-trends`, {
             params: { viewType, class: cls }
           }),
         ]);
@@ -98,7 +99,7 @@ const AttendanceAnalytics = () => {
     if (!exportType) return;
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/attendance/export-attendance', {
+      const res = await axios.get(`${Api_url}/attendance/export-attendance`, {
         params: {
           type: exportType,
           date: format(selectedDate, 'yyyy-MM-dd'),

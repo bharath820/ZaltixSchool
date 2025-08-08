@@ -16,6 +16,8 @@ import { ArrowLeft, Download, Search, Calendar, Plus, Save } from 'lucide-react'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import AddStudentModal from '@/components/AddStudentModal';
 
+import {Api_url} from '../config/config.js'
+
 const subjects = ['Math', 'Science', 'English', 'Social', 'Telugu'];
 
 const Attendance = () => {
@@ -29,7 +31,7 @@ const Attendance = () => {
 
   const fetchStudents = async (cls, date, subject) => {
     try {
-      const res = await axios.get('http://localhost:5000/attendance', {
+      const res = await axios.get(`${Api_url}/attendance`, {
         params: { class: cls, date, subject },
       });
 
@@ -61,7 +63,7 @@ const Attendance = () => {
     );
 
     try {
-      await axios.put(`http://localhost:5000/attendance/${studentId}`, {
+      await axios.put(`${Api_url}/attendance/${studentId}`, {
         date: selectedDate,
         subject: selectedSubject,
         present,
@@ -75,7 +77,7 @@ const Attendance = () => {
 
   const handleAddStudent = async (newStudent) => {
     try {
-      await axios.post('http://localhost:5000/attendance', {
+      await axios.post(`${Api_url}/attendance`, {
         name: newStudent.name,
         rollNo: newStudent.rollNo,
         class: newStudent.class,
@@ -117,7 +119,7 @@ const Attendance = () => {
         present: student.present,
       }));
 
-      await axios.post('http://localhost:5000/attendance/bulk', payload);
+      await axios.post(`${Api_url}/attendance/bulk`, payload);
       toast.success('Attendance saved!');
     } catch (error) {
       console.error('Error saving attendance:', error);

@@ -9,6 +9,7 @@ import { ArrowLeft, Plus, Eye, Edit, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Projects = () => {
   // Fetch projects
   const fetchProjects = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/AddProject');
+      const res = await axios.get(`${Api_url}/AddProject`);
       setProjects(res.data);
     } catch (err) {
       console.error('Error fetching projects:', err);
@@ -55,10 +56,10 @@ const Projects = () => {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/AddProject/${editingId}`, newData);
+        await axios.put(`${Api_url}/AddProject/${editingId}`, newData);
         toast.success('Project updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/AddProject', newData);
+        await axios.post(`${Api_url}/AddProject`, newData);
         toast.success('Project assigned successfully!');
       }
 
@@ -88,7 +89,7 @@ const Projects = () => {
   // Delete Project
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/AddProject/${id}`);
+      await axios.delete(`${Api_url}/AddProject/${id}`);
       toast.info('Project deleted successfully.');
       fetchProjects();
     } catch (error) {

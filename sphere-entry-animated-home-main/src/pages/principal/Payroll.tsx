@@ -9,6 +9,7 @@ import * as XLSX from 'xlsx';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const Payroll = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Payroll = () => {
 
   const fetchPayroll = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/payroll');
+      const res = await axios.get(`${Api_url}/payroll`);
       setPayrollData(res.data);
     } catch (err) {
       console.error('Fetch error:', err);
@@ -42,7 +43,7 @@ const Payroll = () => {
 
   const handleDelete = async id => {
     try {
-      await axios.delete(`http://localhost:5000/payroll/${id}`);
+      await axios.delete(`${Api_url}/payroll/${id}`);
       setPayrollData(prev => prev.filter(p => p._id !== id));
       toast.success('Entry deleted successfully!', { autoClose: 1500 });
     } catch (err) {
@@ -54,7 +55,7 @@ const Payroll = () => {
   const handleUpdateEmployee = async updated => {
     const netSalary = updated.baseSalary + updated.allowances - updated.deductions;
     try {
-      const res = await axios.put(`http://localhost:5000/payroll/${updated._id}`, { ...updated, netSalary });
+      const res = await axios.put(`${Api_url}/payroll/${updated._id}`, { ...updated, netSalary });
       setPayrollData(prev => prev.map(p => p._id === updated._id ? res.data : p));
       setShowEditModal(false);
       toast.success('Entry updated successfully!', { autoClose: 1500 });
@@ -68,7 +69,7 @@ const Payroll = () => {
     const emp = payrollData.find(p => p._id === id);
     if (!emp) return;
     try {
-      const res = await axios.put(`http://localhost:5000/payroll/${id}`, { ...emp, status: newStatus });
+      const res = await axios.put(`${Api_url}/payroll/${id}`, { ...emp, status: newStatus });
       setPayrollData(prev => prev.map(p => p._id === id ? res.data : p));
       toast.success('Status updated!', { autoClose: 1200 });
     } catch (err) {
@@ -99,7 +100,7 @@ const Payroll = () => {
     const netSalary = newEmployee.baseSalary + newEmployee.allowances - newEmployee.deductions;
     const payload = { ...newEmployee, netSalary };
     try {
-      const res = await axios.post('http://localhost:5000/payroll', payload);
+      const res = await axios.post(`${Api_url}/payroll`, payload);
       setPayrollData(prev => [res.data, ...prev]);
       setShowAddForm(false);
       setNewEmployee({ name: '', position: '', department: '', baseSalary: 0, allowances: 0, deductions: 0, status: 'Pending' });

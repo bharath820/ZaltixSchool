@@ -9,6 +9,8 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import {Api_url} from '../config/config.js'
+
 const Tests = () => {
   const navigate = useNavigate();
   const [tests, setTests] = useState([]);
@@ -25,7 +27,7 @@ const Tests = () => {
 
   const fetchTests = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/AddTest');
+      const res = await axios.get(`${Api_url} /AddTest`);
       setTests(res.data);
     } catch (err) {
       console.error('Error fetching tests:', err);
@@ -47,10 +49,10 @@ const Tests = () => {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/AddTest/${editingId}`, data);
+        await axios.put(`${Api_url}/AddTest/${editingId}`, data);
         toast.success('✅ Test updated successfully');
       } else {
-        await axios.post('http://localhost:5000/AddTest', { ...data, status: 'Draft', attempts: 0 });
+        await axios.post(`${Api_url}/AddTest`, { ...data, status: 'Draft', attempts: 0 });
         toast.success('✅ Test created successfully');
       }
 
@@ -79,7 +81,7 @@ const Tests = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/AddTest/${id}`);
+      await axios.delete(`${Api_url}/AddTest/${id}`);
       toast.info('🗑️ Test deleted successfully');
       fetchTests();
     } catch (error) {
@@ -92,7 +94,7 @@ const Tests = () => {
     try {
       const current = tests.find((test) => test._id === id);
       const newStatus = current.status === 'Published' ? 'Draft' : 'Published';
-      await axios.put(`http://localhost:5000/AddTest/${id}`, { ...current, status: newStatus });
+      await axios.put(`${Api_url}/AddTest/${id}`, { ...current, status: newStatus });
       toast.success(`✅ Test ${newStatus === 'Published' ? 'published' : 'unpublished'} successfully`);
       fetchTests();
     } catch (err) {

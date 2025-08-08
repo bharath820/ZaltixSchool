@@ -9,6 +9,8 @@ import { ArrowLeft, Plus, Trophy, Trash2, Upload, Download } from 'lucide-react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import {Api_url} from '../config/config.js'
+
 const Achievements = () => {
   const navigate = useNavigate();
   const [achievements, setAchievements] = useState([]);
@@ -27,7 +29,7 @@ const Achievements = () => {
     const fetchAchievements = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/achievements');
+        const response = await fetch(`${Api_url}/achievements`);
         if (!response.ok) throw new Error('Failed to fetch achievements');
         const data = await response.json();
         setAchievements(data);
@@ -52,7 +54,7 @@ const Achievements = () => {
     formDataToSend.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:5000/achievements', {
+      const response = await fetch(`${Api_url}/achievements`, {
         method: 'POST',
         body: formDataToSend,
       });
@@ -76,7 +78,7 @@ const Achievements = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this achievement?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/achievements/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${Api_url}/achievements/${id}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Failed to delete achievement');
       setAchievements(prev => prev.filter(a => a._id !== id));
       toast.success('Achievement deleted successfully');

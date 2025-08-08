@@ -9,6 +9,7 @@ import EditFeeModal from '@/components/EditFeeModal';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const FeeReports = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const FeeReports = () => {
 
   const fetchStudentWiseFees = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/fee/student');
+      const res = await axios.get(`${Api_url}/fee/student`);
       setStudentWiseData(res.data);
     } catch {
       console.error('Failed to load student-wise fee data.');
@@ -36,7 +37,7 @@ const FeeReports = () => {
 
   const fetchClassWiseFees = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/fee/class');
+      const res = await axios.get(`${Api_url}/fee/class`);
       setClassWiseData(res.data);
     } catch {
       console.error('Failed to load class-wise fee data.');
@@ -45,7 +46,7 @@ const FeeReports = () => {
 
   const handleUpdateRecord = async (updatedRecord: any) => {
     try {
-      await axios.put(`http://localhost:5000/fee/${updatedRecord.id}`, updatedRecord);
+      await axios.put(`${Api_url}/fee/${updatedRecord.id}`, updatedRecord);
       fetchStudentWiseFees();
       setShowEditModal(false);
       toast.success('✅ Record updated successfully!');
@@ -57,7 +58,7 @@ const FeeReports = () => {
   const handleAddRecord = async (newRecord: any) => {
     try {
       newRecord.amount = newRecord.amount.replace(/[₹,]/g, '');
-      await axios.post('http://localhost:5000/fee', newRecord);
+      await axios.post(`${Api_url}/fee`, newRecord);
       fetchStudentWiseFees();
       toast.success('✅ Student added successfully!');
     } catch {
@@ -67,7 +68,7 @@ const FeeReports = () => {
 
   const handleDeleteStudent = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/fee/${id}`);
+      await axios.delete(`${Api_url}/fee/${id}`);
       fetchStudentWiseFees();
       toast.success('🗑️ Student deleted successfully!');
     } catch {
@@ -77,7 +78,7 @@ const FeeReports = () => {
 
   const handleDeleteClass = async (className: string) => {
     try {
-      await axios.delete(`http://localhost:5000/fee/class/${className}`);
+      await axios.delete(`${Api_url}/fee/class/${className}`);
       fetchClassWiseFees();
       toast.success('🗑️ Class fee data deleted!');
     } catch {

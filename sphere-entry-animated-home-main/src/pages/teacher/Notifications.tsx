@@ -9,6 +9,7 @@ import { ArrowLeft, Plus, Send, Edit, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const Notifications = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/AddNotification');
+      const res = await axios.get(`${Api_url}/AddNotification`);
       setNotifications(res.data);
     } catch (err) {
       console.error('Error fetching notifications:', err);
@@ -48,10 +49,10 @@ const Notifications = () => {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/AddNotification/${editingId}`, formData);
+        await axios.put(`${Api_url}/AddNotification/${editingId}`, formData);
         toast.success('Notification updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/AddNotification', {
+        await axios.post(`${Api_url}/AddNotification`, {
           ...formData,
           status: 'Sent',
           date: new Date().toISOString().split('T')[0],
@@ -82,7 +83,7 @@ const Notifications = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/AddNotification/${id}`);
+      await axios.delete(`${Api_url}/AddNotification/${id}`);
       toast.info('Notification deleted successfully.');
       fetchNotifications();
     } catch (error) {

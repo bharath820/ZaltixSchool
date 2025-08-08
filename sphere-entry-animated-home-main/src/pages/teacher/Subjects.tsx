@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Plus, Pencil, Trash2 } from 'lucide-react';
+import {Api_url} from '../config/config.js'
 
 const classOptions = ['10A', '10B', '10C', '9A', '9B'];
 const sectionOptions = ['A', 'B', 'C'];
@@ -28,7 +29,7 @@ const Subjects = () => {
 
   const fetchSubjects = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/subjects', { params: { className: selectedClass } });
+      const res = await axios.get(`${Api_url}/subjects`, { params: { className: selectedClass } });
       setSubjects(res.data);
     } catch (err) {
       console.error('Fetch error:', err);
@@ -52,10 +53,10 @@ const Subjects = () => {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/subjects/${editingId}`, payload);
+        await axios.put(`${Api_url}/subjects/${editingId}`, payload);
         toast.success('✅ Subject updated successfully');
       } else {
-        await axios.post('http://localhost:5000/subjects', payload);
+        await axios.post(`${Api_url}/subjects`, payload);
         toast.success('✅ Subject added successfully');
       }
       resetForm();
@@ -74,7 +75,7 @@ const Subjects = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/subjects/${id}`);
+      await axios.delete(`${Api_url}/subjects/${id}`);
       toast.info('🗑️ Subject deleted successfully');
       fetchSubjects();
     } catch (err) {

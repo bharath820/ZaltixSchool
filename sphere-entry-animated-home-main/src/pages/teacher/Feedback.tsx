@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const TeacherFeedback = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const TeacherFeedback = () => {
   // Fetch feedback list
   const fetchFeedbacks = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/AddFeedback');
+      const res = await axios.get(`${Api_url}/AddFeedback`);
       setFeedbackList(res.data);
     } catch (err) {
       console.error(err);
@@ -53,10 +54,10 @@ const TeacherFeedback = () => {
 
     try {
       if (editId) {
-        await axios.put(`http://localhost:5000/AddFeedback/${editId}`, payload);
+        await axios.put(`${Api_url}/AddFeedback/${editId}`, payload);
         toast.success('Feedback updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/AddFeedback', payload);
+        await axios.post(`${Api_url}/AddFeedback`, payload);
         toast.success('Feedback submitted successfully!');
       }
 
@@ -88,7 +89,7 @@ const TeacherFeedback = () => {
   // Delete feedback
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/AddFeedback/${id}`);
+      await axios.delete(`${Api_url}/AddFeedback/${id}`);
       toast.info('Feedback deleted successfully.');
       fetchFeedbacks();
     } catch (err) {

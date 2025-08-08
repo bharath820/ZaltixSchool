@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, FileText, Search } from 'lucide-react';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import axios from 'axios';
+import {Api_url} from '../config/config.js'
 
 const subjectFields = [
   'math',
@@ -23,7 +24,7 @@ const AcademicReports = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:5000/grades')
+    axios.get(`${Api_url}/grades`)
       .then(res => {
         const data = res.data;
         if (Array.isArray(data)) {

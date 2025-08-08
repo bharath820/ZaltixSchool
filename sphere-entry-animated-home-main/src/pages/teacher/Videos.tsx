@@ -7,6 +7,8 @@ import { ArrowLeft, Plus, Play, Edit, Trash2, Grid, List } from 'lucide-react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
+
 
 type Video = {
   _id: string;
@@ -27,7 +29,7 @@ const Videos = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5000/videos')
+      .get(`${Api_url}/videos`)
       .then(res => setVideos(res.data))
       .catch(err => {
         console.error('Error fetching videos:', err);
@@ -43,11 +45,11 @@ const Videos = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        const res = await axios.put(`http://localhost:5000/videos/${editingId}`, formData);
+        const res = await axios.put(`${Api_url}/videos/${editingId}`, formData);
         setVideos(prev => prev.map(video => (video._id === editingId ? res.data : video)));
         toast.success('✅ Video updated successfully');
       } else {
-        const res = await axios.post('http://localhost:5000/videos', formData);
+        const res = await axios.post(`${Api_url}/videos`, formData);
         setVideos(prev => [res.data, ...prev]);
         toast.success('✅ Video added successfully');
       }
@@ -70,7 +72,7 @@ const Videos = () => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this video?')) return;
     try {
-      await axios.delete(`http://localhost:5000/videos/${id}`);
+      await axios.delete(`${Api_url}/videos/${id}`);
       setVideos(prev => prev.filter(video => video._id !== id));
       toast.success('🗑️ Video deleted successfully');
     } catch (err) {

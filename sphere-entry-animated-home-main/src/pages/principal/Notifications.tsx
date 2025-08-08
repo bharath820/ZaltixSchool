@@ -7,13 +7,14 @@ import { ArrowLeft, Bell, Send, Eye, Users } from 'lucide-react';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Api_url} from '../config/config.js'
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/AddNotification")
+    fetch(`${Api_url}/AddNotification`)
       .then(res => res.json())
       .then(data => {
         setNotifications(data);

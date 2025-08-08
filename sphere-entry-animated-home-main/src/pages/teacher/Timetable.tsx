@@ -9,6 +9,8 @@ import autoTable from 'jspdf-autotable';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import {Api_url} from '../config/config.js'
+
 const Timetable = () => {
   const navigate = useNavigate();
 
@@ -51,7 +53,7 @@ const Timetable = () => {
     const fetchTimetable = async () => {
       setIsLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5000/timetable/${selectedClass}`);
+        const res = await axios.get(`${Api_url}/timetable/${selectedClass}`);
         const entries = res.data?.data?.entries;
         const normalized = normalizeTimetable(entries);
         setTimetableData(normalized);
@@ -82,7 +84,7 @@ const Timetable = () => {
         academicYear: '2024-25',
         entries: timetableData
       };
-      await axios.post('http://localhost:5000/timetable', payload);
+      await axios.post(`${Api_url}/timetable`, payload);
       toast.success('✅ Timetable saved successfully');
     } catch (err) {
       console.error('Error saving timetable:', err);
