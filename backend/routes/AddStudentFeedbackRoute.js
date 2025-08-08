@@ -21,4 +21,17 @@ router.post('/', async (req, res) => {
   }
 });
 
+
+// GET /studentfeedback
+router.get('/', async (req, res) => {
+  try {
+    const feedbackList = await StudentFeedback.find().sort({ createdAt: -1 }); // Most recent first
+    res.json(feedbackList);
+  } catch (err) {
+    console.error('Error fetching feedback:', err.message);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+
 export default router;

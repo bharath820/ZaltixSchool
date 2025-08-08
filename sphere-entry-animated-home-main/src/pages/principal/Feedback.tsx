@@ -37,27 +37,30 @@ const Feedback = () => {
   const navigate = useNavigate();
   const [feedbackData, setFeedbackData] = useState<FeedbackType[]>([]);
   const [filterType, setFilterType] = useState<'Teacher' | 'Student'>('Teacher');
-
-  const fetchFeedback = async () => {
-    try {
-      const url =
-        filterType === 'Teacher'
-          ? 'http://localhost:5000/AddFeedback'
-          : 'http://localhost:5000/StudentFeedback'; // ✅ Ensure this route exists in your backend
-
-      const res = await axios.get<FeedbackType[]>(url);
-      setFeedbackData(res.data);
-    } catch (err) {
-      console.error('Fetch error:', err);
-      toast({
-        title: 'Error',
-        description: 'Failed to fetch feedback data.',
-        variant: 'destructive',
-      });
-    }
-  };
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const fetchFeedback = async () => {
+      setLoading(true);
+      try {
+        const url =
+          filterType === 'Teacher'
+            ? 'http://localhost:5000/AddFeedback'
+            : 'http://localhost:5000/studentfeedback';
+        const res = await axios.get<FeedbackType[]>(url);
+        setFeedbackData(res.data || []); // Fallback if backend returns null
+      } catch (err) {
+        toast({
+          title: 'Error',
+          description: `Failed to fetch ${filterType.toLowerCase()} feedback data.`,
+          variant: 'destructive',
+        });
+        setFeedbackData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchFeedback();
   }, [filterType]);
 
@@ -142,65 +145,75 @@ const Feedback = () => {
         <Card className="bg-white/70 backdrop-blur-sm">
           <CardHeader><CardTitle>{filterType} Feedback</CardTitle></CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  {filterType === 'Teacher' ? (
-                    <>
-                      <TableHead>Class</TableHead>
-                      <TableHead>Subject</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Feedback</TableHead>
-                      <TableHead>Date</TableHead>
-                    </>
-                  ) : (
-                    <>
-                      <TableHead>Student Name</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Feedback</TableHead>
-                      <TableHead>Date</TableHead>
-                    </>
-                  )}
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {feedbackData.map(f => (
-                  <TableRow key={f._id}>
+            {loading ? (
+              <div className="text-center py-8 text-lg text-gray-600">Loading...</div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
                     {filterType === 'Teacher' ? (
                       <>
-                        <TableCell>{(f as TeacherFeedbackType).class || '-'}</TableCell>
-                        <TableCell>{(f as TeacherFeedbackType).subject || '-'}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-1">
-                            {renderStars(f.rating)}
-                            <span className={`ml-2 font-medium ${getRatingColor(f.rating)}`}>
-                              {f.rating ?? 0}/5
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="max-w-xs truncate">{f.feedback || '-'}</TableCell>
-                        <TableCell>{f.date ? new Date(f.date).toLocaleDateString() : '-'}</TableCell>
+                        <TableHead>Class</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Rating</TableHead>
+                        <TableHead>Feedback</TableHead>
+                        <TableHead>Date</TableHead>
                       </>
                     ) : (
                       <>
-                        <TableCell>{(f as StudentFeedbackType).studentName || 'N/A'}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-1">
-                            {renderStars(f.rating)}
-                            <span className={`ml-2 font-medium ${getRatingColor(f.rating)}`}>
-                              {f.rating ?? 0}/5
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="max-w-xs truncate">{f.feedback || '-'}</TableCell>
-                        <TableCell>{f.date ? new Date(f.date).toLocaleDateString() : '-'}</TableCell>
+                        <TableHead>Student Name</TableHead>
+                        <TableHead>Rating</TableHead>
+                        <TableHead>Feedback</TableHead>
+                        <TableHead>Date</TableHead>
                       </>
                     )}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+
+                <TableBody>
+                  {feedbackData.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={filterType === "Teacher" ? 5 : 4} className="text-center text-gray-500 py-8">
+                        No feedback available.
+                      </TableCell>
+                    </TableRow>
+                  ) : feedbackData.map(f => (
+                    <TableRow key={f._id}>
+                      {filterType === 'Teacher' ? (
+                        <>
+                          <TableCell>{(f as TeacherFeedbackType).class || '-'}</TableCell>
+                          <TableCell>{(f as TeacherFeedbackType).subject || '-'}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center space-x-1">
+                              {renderStars(f.rating)}
+                              <span className={`ml-2 font-medium ${getRatingColor(f.rating)}`}>
+                                {f.rating ?? 0}/5
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate">{f.feedback || '-'}</TableCell>
+                          <TableCell>{f.date ? new Date(f.date).toLocaleDateString() : '-'}</TableCell>
+                        </>
+                      ) : (
+                        <>
+                          <TableCell>{(f as StudentFeedbackType).studentName || 'N/A'}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center space-x-1">
+                              {renderStars(f.rating)}
+                              <span className={`ml-2 font-medium ${getRatingColor(f.rating)}`}>
+                                {f.rating ?? 0}/5
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate">{f.feedback || '-'}</TableCell>
+                          <TableCell>{f.date ? new Date(f.date).toLocaleDateString() : '-'}</TableCell>
+                        </>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>
