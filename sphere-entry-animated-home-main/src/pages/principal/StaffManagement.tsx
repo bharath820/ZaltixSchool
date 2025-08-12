@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Download, User, Search, Plus } from 'lucide-react';
+import { ArrowLeft, Download, User, Search, Plus, Trash2 } from 'lucide-react';
 import AddStaffModal from '@/components/AddStaffModal';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
@@ -51,6 +51,18 @@ const StaffManagement = () => {
     } catch (error) {
       console.error('Error adding staff:', error);
       toast.error('Failed to add staff.', { autoClose: 1500 });
+    }
+  };
+
+  const handleDeleteStaff = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this staff member?")) return;
+    try {
+      await axios.delete(`${Api_url}/AddStaff/${id}`);
+      toast.success('Staff deleted successfully!', { autoClose: 1500 });
+      fetchStaffData();
+    } catch (error) {
+      console.error('Error deleting staff:', error);
+      toast.error('Failed to delete staff.', { autoClose: 1500 });
     }
   };
 
@@ -178,6 +190,7 @@ const StaffManagement = () => {
                     <th className="py-2 text-left text-sm">Classes</th>
                     <th className="py-2 text-left text-sm">Join Date</th>
                     <th className="py-2 text-left text-sm">Status</th>
+                    <th className="py-2 text-left text-sm">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -215,6 +228,16 @@ const StaffManagement = () => {
                         }`}>
                           {staff.status}
                         </span>
+                      </td>
+                      <td className="py-2">
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteStaff(staff.id)}
+                          className="flex items-center gap-1"
+                        >
+                          <Trash2 className="w-4 h-4" /> Delete
+                        </Button>
                       </td>
                     </tr>
                   ))}

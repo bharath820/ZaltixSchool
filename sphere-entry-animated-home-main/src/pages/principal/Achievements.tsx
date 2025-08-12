@@ -7,7 +7,7 @@ import { ArrowLeft, Trophy, Medal, Star, Award } from 'lucide-react';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {Api_url} from '../config/config.js'
+import { Api_url } from '../config/config.js';
 
 const Achievements = () => {
   const [achievements, setAchievements] = useState([]);
@@ -18,11 +18,9 @@ const Achievements = () => {
       .then(res => res.json())
       .then(data => {
         setAchievements(data);
-        // ✅ Removed success toast here
       })
       .catch(err => {
         console.error("Error fetching achievements:", err);
-        // ❌ Removed error toast here
       });
   }, []);
 
@@ -32,17 +30,6 @@ const Achievements = () => {
     { category: 'Arts', count: achievements.filter(a => a.category === 'Arts').length, icon: <Medal className="w-5 h-5" />, color: 'text-purple-600' },
     { category: 'Leadership', count: achievements.filter(a => a.category === 'Leadership').length, icon: <Award className="w-5 h-5" />, color: 'text-orange-600' }
   ];
-
-  const getPositionBadge = (position: string) => {
-    const colors = {
-      '1st Place': 'bg-yellow-100 text-yellow-800',
-      '2nd Place': 'bg-gray-100 text-gray-800',
-      '3rd Place': 'bg-orange-100 text-orange-800',
-      'Champions': 'bg-green-100 text-green-800',
-      'Winner': 'bg-blue-100 text-blue-800'
-    };
-    return colors[position as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
 
   return (
     <div className="min-h-screen p-4 relative">
@@ -103,33 +90,23 @@ const Achievements = () => {
                   <TableRow>
                     <TableHead>Achievement</TableHead>
                     <TableHead>Student/Team</TableHead>
-                    <TableHead>Grade</TableHead>
-                    <TableHead>Position</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead>Date</TableHead>
-                    <TableHead>Points</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {achievements.length > 0 ? (
-                    achievements.map((achievement: any) => (
+                    achievements.map((achievement) => (
                       <TableRow key={achievement.id}>
                         <TableCell className="font-medium">{achievement.title}</TableCell>
                         <TableCell>{achievement.student}</TableCell>
-                        <TableCell>{achievement.grade}</TableCell>
-                        <TableCell>
-                          <span className={`px-2 py-1 rounded-full text-xs ${getPositionBadge(achievement.position)}`}>
-                            {achievement.position}
-                          </span>
-                        </TableCell>
                         <TableCell>{achievement.category}</TableCell>
                         <TableCell>{achievement.date}</TableCell>
-                        <TableCell className="font-medium text-green-600">{achievement.points}</TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-gray-500">
+                      <TableCell colSpan={4} className="text-center text-gray-500">
                         No achievements found.
                       </TableCell>
                     </TableRow>
@@ -157,7 +134,6 @@ const Achievements = () => {
                       <p className="text-sm text-gray-600">Grade 5 - 3 Gold medals</p>
                     </div>
                   </div>
-                  <span className="text-yellow-600 font-bold mt-2 sm:mt-0">300 pts</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
@@ -167,7 +143,6 @@ const Achievements = () => {
                       <p className="text-sm text-gray-600">Grade 4 - 2 Silver medals</p>
                     </div>
                   </div>
-                  <span className="text-gray-600 font-bold mt-2 sm:mt-0">225 pts</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center justify-between p-3 bg-orange-50 rounded-lg">
                   <div className="flex items-center gap-3">
@@ -177,7 +152,6 @@ const Achievements = () => {
                       <p className="text-sm text-gray-600">Grade 3 - 1 Bronze medal</p>
                     </div>
                   </div>
-                  <span className="text-orange-600 font-bold mt-2 sm:mt-0">150 pts</span>
                 </div>
               </div>
             </CardContent>

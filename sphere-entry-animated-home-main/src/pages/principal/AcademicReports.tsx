@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, FileText, Search } from 'lucide-react';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import axios from 'axios';
-import {Api_url} from '../config/config.js'
+import { Api_url } from '../config/config.js';
 
 const subjectFields = [
   'math',
@@ -18,14 +18,19 @@ const subjectFields = [
   'hindi',
 ];
 
+// Predefined classes
+const predefinedClasses = ['9A', '9B', '10A', '10B'];
+
 const AcademicReports = () => {
   const [performance, setPerformance] = useState([]);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedClass, setSelectedClass] = useState('');
 
   useEffect(() => {
-    axios.get(`${Api_url}/grades`)
-      .then(res => {
+    axios
+      .get(`${Api_url}/grades`)
+      .then((res) => {
         const data = res.data;
         if (Array.isArray(data)) {
           setPerformance(data);
@@ -35,16 +40,19 @@ const AcademicReports = () => {
           console.error('Unexpected response format', data);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('API error:', err);
       });
   }, []);
 
-  const filteredStudents = performance.filter(student =>
-    (student.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (student.class || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (student.rollNo || '').toString().includes(searchTerm)
-  );
+  const filteredStudents = performance.filter((student) => {
+    const matchesSearch =
+      (student.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (student.class || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (student.rollNo || '').toString().includes(searchTerm);
+    const matchesClass = selectedClass ? student.class === selectedClass : true;
+    return matchesSearch && matchesClass;
+  });
 
   const getGradeColor = (marks) => {
     if (marks >= 90) return 'text-green-600';
@@ -63,7 +71,10 @@ const AcademicReports = () => {
   };
 
   const calculateOverall = (student) => {
-    const total = subjectFields.reduce((sum, subject) => sum + (Number(student[subject]) || 0), 0);
+    const total = subjectFields.reduce(
+      (sum, subject) => sum + (Number(student[subject]) || 0),
+      0
+    );
     return Math.round(total / subjectFields.length);
   };
 
@@ -74,7 +85,7 @@ const AcademicReports = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6 animate-fade-in-up">
           <div className="flex items-center space-x-4">
-            <Button 
+            <Button
               onClick={() => navigate('/dashboard/principal')}
               variant="outline"
               size="sm"
@@ -89,14 +100,17 @@ const AcademicReports = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">Academic Performance</h1>
-                <p className="text-gray-600">Student subject-wise performance overview</p>
+                <p className="text-gray-600">
+                  Student subject-wise performance overview
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mb-6">
-          <div className="relative w-full max-w-md">
+        {/* Search and Class Filter */}
+        <div className="mb-6 flex flex-col md:flex-row gap-4 items-center">
+          <div className="relative w-full md:w-2/3">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               placeholder="Search by student name, class, or roll number..."
@@ -105,55 +119,88 @@ const AcademicReports = () => {
               className="pl-10 bg-white/70"
             />
           </div>
+          <div>
+            <select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+              className="p-2 border border-gray-300 rounded bg-white/70 text-sm"
+            >
+              <option value="">All Classes</option>
+              {predefinedClasses.map((cls, idx) => (
+                <option key={idx} value={cls}>
+                  {cls}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card className="bg-white/70 backdrop-blur-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Students</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">
+                Total Students
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{performance.length}</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {filteredStudents.length}
+              </div>
             </CardContent>
           </Card>
           <Card className="bg-white/70 backdrop-blur-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Average Score</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">
+                Average Score
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                {performance.length > 0 ? `${(
-                  performance.reduce((acc, curr) => acc + calculateOverall(curr), 0) / performance.length
-                ).toFixed(1)}%` : '0%'}
+                {filteredStudents.length > 0
+                  ? `${(
+                      filteredStudents.reduce(
+                        (acc, curr) => acc + calculateOverall(curr),
+                        0
+                      ) / filteredStudents.length
+                    ).toFixed(1)}%`
+                  : '0%'}
               </div>
             </CardContent>
           </Card>
           <Card className="bg-white/70 backdrop-blur-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Top Performers</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">
+                Top Performers
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple-600">
-                {performance.filter(s => calculateOverall(s) >= 90).length}
+                {filteredStudents.filter((s) => calculateOverall(s) >= 90).length}
               </div>
             </CardContent>
           </Card>
           <Card className="bg-white/70 backdrop-blur-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Classes</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">
+                Classes
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600">
-                {[...new Set(performance.map(s => s.class))].length}
+                {[...new Set(filteredStudents.map((s) => s.class))].length}
               </div>
             </CardContent>
           </Card>
         </div>
 
+        {/* Table */}
         <Card className="bg-white/70 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Student Academic Performance Report</CardTitle>
-            <p className="text-sm text-gray-600">Real-time performance view synced from Teacher Dashboard</p>
+            <p className="text-sm text-gray-600">
+              Real-time performance view synced from Teacher Dashboard
+            </p>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
@@ -165,7 +212,9 @@ const AcademicReports = () => {
                     <TableHead>Class</TableHead>
                     {subjectFields.map((subject) => (
                       <TableHead key={subject} className="text-center">
-                        {subject.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                        {subject
+                          .replace(/([A-Z])/g, ' $1')
+                          .replace(/^./, (str) => str.toUpperCase())}
                       </TableHead>
                     ))}
                     <TableHead className="text-center">Total Marks</TableHead>
@@ -175,9 +224,14 @@ const AcademicReports = () => {
                 </TableHeader>
                 <TableBody>
                   {filteredStudents.map((student) => {
-                    const marks = subjectFields.map((field) => Number(student[field]) || 0);
-                    const totalMarks = student.totalMarks ?? marks.reduce((a, b) => a + b, 0);
-                    const overall = Math.round(totalMarks / subjectFields.length);
+                    const marks = subjectFields.map(
+                      (field) => Number(student[field]) || 0
+                    );
+                    const totalMarks =
+                      student.totalMarks ?? marks.reduce((a, b) => a + b, 0);
+                    const overall = Math.round(
+                      totalMarks / subjectFields.length
+                    );
                     return (
                       <TableRow key={student._id || student.id}>
                         <TableCell>{student.rollNo}</TableCell>
@@ -188,14 +242,31 @@ const AcademicReports = () => {
                           </span>
                         </TableCell>
                         {subjectFields.map((subject) => (
-                          <TableCell key={subject} className={`text-center font-semibold ${getGradeColor(student[subject])}`}>
+                          <TableCell
+                            key={subject}
+                            className={`text-center font-semibold ${getGradeColor(
+                              student[subject]
+                            )}`}
+                          >
                             {student[subject]}
                           </TableCell>
                         ))}
-                        <TableCell className="text-center font-bold">{totalMarks}</TableCell>
-                        <TableCell className={`text-center font-bold ${getGradeColor(overall)}`}>{overall}</TableCell>
+                        <TableCell className="text-center font-bold">
+                          {totalMarks}
+                        </TableCell>
+                        <TableCell
+                          className={`text-center font-bold ${getGradeColor(
+                            overall
+                          )}`}
+                        >
+                          {overall}
+                        </TableCell>
                         <TableCell className="text-center">
-                          <span className={`px-2 py-1 rounded text-sm font-medium ${getGradeBadgeColor(student.grade)}`}>
+                          <span
+                            className={`px-2 py-1 rounded text-sm font-medium ${getGradeBadgeColor(
+                              student.grade
+                            )}`}
+                          >
                             {student.grade}
                           </span>
                         </TableCell>
