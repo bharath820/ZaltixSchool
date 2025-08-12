@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator } from 'reac
 import { Card } from 'react-native-paper';
 import { FontAwesome5, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
+import {Api_url} from './config/config.js'
 
 const student = {
   name: 'John Doe',
@@ -26,7 +27,7 @@ export default function SubjectsScreen() {
   };
 
   useEffect(() => {
-    axios.get('http://192.168.29.77:5000/subjects')
+    axios.get(`${Api_url}/subjects`)
       .then(res => {
         setSubjects(res.data);
       })

@@ -14,6 +14,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { FontAwesome } from '@expo/vector-icons'; // FontAwesome for play icon
+import {Api_url} from './config/config.js'
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -31,7 +32,7 @@ export default function VideosScreen() {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get('http://192.168.29.77:5000/videos');
+      const res = await axios.get(`${Api_url}/videos`);
       if (Array.isArray(res.data)) {
         setVideos(res.data);
       } else {

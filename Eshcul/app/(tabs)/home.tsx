@@ -1,21 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Dimensions } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, FontAwesome5, Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const cardData = [
+  // Priority items first
   {
     name: 'Attendance',
     icon: (color: string) => <Ionicons name="calendar" size={32} color={color} />,
     bgColor: '#e0f7fa',
     color: '#00796b',
-  },
-  {
-    name: 'Fees',
-    icon: (color: string) => <FontAwesome5 name="money-bill-wave" size={32} color={color} />,
-    bgColor: '#fff3e0',
-    color: '#f57c00',
   },
   {
     name: 'Timetable',
@@ -24,17 +19,39 @@ const cardData = [
     color: '#1976d2',
   },
   {
-    name: 'Subjects',
-    icon: (color: string) => <MaterialCommunityIcons name="book-open-page-variant" size={32} color={color} />,
-    bgColor: '#f3e5f5',
-    color: '#6a1b9a',
-  },
-  {
     name: 'Dairy',
     icon: (color: string) => <MaterialCommunityIcons name="notebook" size={32} color={color} />,
     bgColor: '#fce4ec',
     color: '#ad1457',
   },
+  {
+    name: 'Fees',
+    icon: (color: string) => <FontAwesome5 name="money-bill-wave" size={32} color={color} />,
+    bgColor: '#fff3e0',
+    color: '#f57c00',
+  },
+  {
+    name: 'Notification',
+    icon: (color: string) => <Ionicons name="notifications" size={32} color={color} />,
+    bgColor: '#fce4ec',
+    color: '#ec407a',
+  },
+  {
+    name: 'Reports',
+    icon: (color: string) => <Ionicons name="document-text" size={32} color={color} />,
+    bgColor: '#fbe9e7',
+    color: '#d84315',
+  },
+
+  // Middle section — Subjects here
+  {
+    name: 'Subjects',
+    icon: (color: string) => <MaterialCommunityIcons name="book-open-page-variant" size={32} color={color} />,
+    bgColor: '#f3e5f5',
+    color: '#6a1b9a',
+  },
+
+  // Remaining items
   {
     name: 'Project Work',
     icon: (color: string) => <MaterialCommunityIcons name="file-document-edit" size={32} color={color} />,
@@ -54,12 +71,6 @@ const cardData = [
     color: '#f9a825',
   },
   {
-    name: 'Reports',
-    icon: (color: string) => <Ionicons name="document-text" size={32} color={color} />,
-    bgColor: '#fbe9e7',
-    color: '#d84315',
-  },
-  {
     name: 'E Books',
     icon: (color: string) => <MaterialCommunityIcons name="book" size={32} color={color} />,
     bgColor: '#e1f5fe',
@@ -70,12 +81,6 @@ const cardData = [
     icon: (color: string) => <FontAwesome5 name="medal" size={32} color={color} />,
     bgColor: '#f9fbe7',
     color: '#9e9d24',
-  },
-  {
-    name: 'Notification',
-    icon: (color: string) => <Ionicons name="notifications" size={32} color={color} />,
-    bgColor: '#fce4ec',
-    color: '#ec407a',
   },
   {
     name: 'Bus Tracking',
@@ -112,22 +117,22 @@ export default function HomeScreen() {
 
   const handleCardPress = (cardName: string) => {
     const routes: Record<string, string> = {
-      'Attendance': '../../attendance',
-      'Fees': '../../fee',
-      'Timetable': '../../timetable',
-      'Subjects': '../../subjects',
-      'Dairy': '../../dairy',
-      'Project Work': '../../project',
-      'Videos/Gallery': '../../videos',
-      'Mock Test': '../../mocktest',
-      'Reports': '../../reports',
-      'E Books': '../../ebooks',
-      'Achievements': '../../achievements',
-      'Notification': '../../notifications',
-      'Bus Tracking': '../../bus-tracking',
-      'Feedback': '../../feedback',
-      'Inventory': '../../inventory',
-      'Chat Box': '../../chatbox',
+      'Attendance': '/attendance',
+      'Fees': '/fee',
+      'Timetable': '/timetable',
+      'Subjects': '/subjects',
+      'Dairy': '/dairy',
+      'Project Work': '/project',
+      'Videos/Gallery': '/videos',
+      'Mock Test': '/mocktest',
+      'Reports': '/reports',
+      'E Books': '/ebooks',
+      'Achievements': '/achievements',
+      'Notification': '/notifications',
+      'Bus Tracking': '/bus-tracking',
+      'Feedback': '/feedback',
+      'Inventory': '/inventory',
+      'Chat Box': '/chatbox',
     };
 
     if (routes[cardName]) {
@@ -194,7 +199,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
-    marginBottom: 32, // pushed more down
+    marginBottom: 32,
     width: '100%',
     borderWidth: 1,
     borderColor: '#e0e0e0',

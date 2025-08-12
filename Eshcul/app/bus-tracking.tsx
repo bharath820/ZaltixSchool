@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { Platform } from 'react-native';
 import * as Location from 'expo-location';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 

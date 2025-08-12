@@ -4,6 +4,7 @@ import { MaterialCommunityIcons, FontAwesome5, Entypo } from '@expo/vector-icons
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import moment from 'moment';
+import {Api_url} from './config/config.js'
 
 export default function ProjectScreen() {
   const [projects, setProjects] = useState([]);
@@ -12,7 +13,7 @@ export default function ProjectScreen() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await axios.get('http://192.168.29.77:5000/AddProject'); // Update if needed
+        const res = await axios.get(`${Api_url}/AddProject`); // Update if needed
         setProjects(res.data);
       } catch (err) {
         console.error('Failed to fetch projects', err);

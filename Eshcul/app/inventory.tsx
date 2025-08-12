@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, Dimensions, ActivityIndicator } from 
 import { Card } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import {Api_url} from './config/config.js'
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -29,7 +30,7 @@ export default function InventoryScreen() {
 
   const fetchInventory = async () => {
     try {
-      const response = await fetch('http://192.168.29.77:5000/Addstock');
+      const response = await fetch(`${Api_url}/Addstock`);
       const data = await response.json();
 
       const formatted = data.map(item => ({

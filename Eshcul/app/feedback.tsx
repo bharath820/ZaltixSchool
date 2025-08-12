@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import {Api_url} from './config/config.js'
 
 const FeedbackScreen = () => {
   const [feedback, setFeedback] = useState('');
@@ -36,7 +37,7 @@ const FeedbackScreen = () => {
     }
 
     try {
-      const res = await axios.post('http://192.168.29.77:5000/studentfeedback', {
+      const res = await axios.post(`${Api_url}/studentfeedback`, {
         teacher: selectedTeacher,
         feedback,
         rating,

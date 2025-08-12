@@ -34,11 +34,11 @@ const Login = () => {
     }
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const validCredentials = {
         principal: { email: 'principal@edusphere.com', password: 'admin123' },
-        teacher: { email: 'teacher@edusphere.com', password: 'teach123' }
+        teacher: { email: 'teacher@edusphere.com', password: 'teach123' },
       };
 
       const roleCredentials = validCredentials[role as keyof typeof validCredentials];
@@ -156,5 +156,6 @@ const Login = () => {
       </div>
     </div>
   );
+};
 
-export default Log;
+export default Login;

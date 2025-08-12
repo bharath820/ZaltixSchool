@@ -68,7 +68,7 @@ const Inventory = () => {
   const handleSave = async () => {
     if (!editedItem || !editingId) return;
     try {
-      const res = await axios.put(`${Api_url} /Addstock/${editingId}`, editedItem);
+      const res = await axios.put(`${Api_url}/Addstock/${editingId}`, editedItem);
       const updatedItem = res.data;
       setInventoryData(prev =>
         prev.map(item => (item._id === editingId ? updatedItem : item))
@@ -84,7 +84,7 @@ const Inventory = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`${Api_url} /Addstock/${id}`);
+      await axios.delete(`${Api_url}/Addstock/${id}`);
       setInventoryData(prev => prev.filter(item => item._id !== id));
       toast.success('🗑️ Item deleted successfully!');
     } catch (err) {

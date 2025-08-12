@@ -41,15 +41,17 @@ const BusTracking = () => {
   };
 
   const handleDeleteBus = async (busId: string) => {
-    try {
-      await axios.delete(`${Api_url}/addbus/${busId}`);
-      toast.success('🗑️ Bus deleted successfully!', { position: 'top-right' });
-      fetchBuses();
-    } catch (err) {
-      console.error('Error deleting bus:', err);
-      toast.error('❌ Failed to delete bus. Please try again.', { position: 'top-right' });
-    }
-  };
+  if (!window.confirm("Are you sure you want to delete this bus?")) return;
+
+  try {
+    await axios.delete(`${Api_url}/addbus/${busId}`);
+    toast.success('🗑️ Bus deleted successfully!', { position: 'top-right' });
+    fetchBuses(); // refresh list
+  } catch (err) {
+    console.error('Error deleting bus:', err);
+    toast.error('❌ Failed to delete bus. Please try again.', { position: 'top-right' });
+  }
+};
 
   const getStatusIcon = (status: string) => {
     switch (status) {

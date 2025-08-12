@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {Api_url} from './config/config.js'
 
 const { width } = Dimensions.get('window');
 
@@ -18,7 +19,7 @@ export default function NotificationsScreen() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('http://192.168.29.77:5000/AddNotification');
+      const response = await fetch(`${Api_url}/AddNotification`);
       const data = await response.json();
       setNotifications(data);
     } catch (error) {

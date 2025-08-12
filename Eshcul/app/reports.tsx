@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
+import {Api_url} from './config/config.js'
 
 interface StudentData {
   name: string;
@@ -32,7 +33,7 @@ export default function ReportsScreen() {
         setError(null);
 
         // Fetch the student by name directly using backend API
-        const res = await axios.get(`http://192.168.29.77:5000/grades/student/${targetStudentName}`);
+        const res = await axios.get(`${Api_url}/grades/student/${targetStudentName}`);
 
         setStudent(res.data);
       } catch (error: any) {

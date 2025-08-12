@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
+import {Api_url} from './config/config.js'
 
 export default function TimetableScreen() {
   const [timetable, setTimetable] = useState<any>(null);
@@ -21,7 +22,7 @@ export default function TimetableScreen() {
   useEffect(() => {
     const fetchTimetable = async () => {
       try {
-        const res = await axios.get(`http://192.168.29.77:5000/timetable/${className}`);
+        const res = await axios.get(`${Api_url}/timetable/${className}`);
         console.log('Fetched timetable:', res.data);
         setTimetable(res.data.data);
       } catch (err) {

@@ -11,6 +11,7 @@ import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import axios from 'axios';
+import {Api_url} from './config/config.js'
 
 interface Ebook {
   id: string;
@@ -20,7 +21,7 @@ interface Ebook {
   author: string;
 }
 
-const API_URL = 'http://192.168.29.77:5000/api/ebooks'; // Update with your server IP
+const API_URL = `${Api_url}/api/ebooks`; // Update with your server IP
 
 const EbookScreen = () => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
@@ -42,7 +43,7 @@ const EbookScreen = () => {
           subject: item.subject || '-',
           pdfurl: item.url?.startsWith('http')
             ? item.url
-            : `http://192.168.29.77:5000${item.url}`,
+            : `${Api_url}/${item.url}`,
           author: item.author || '-',
         }));
         setEbooks(formatted);

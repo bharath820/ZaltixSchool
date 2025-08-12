@@ -14,6 +14,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 
+import {Api_url} from './config/config.js'
+
 export default function DiaryScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [diaryData, setDiaryData] = useState([]);
@@ -34,7 +36,7 @@ export default function DiaryScreen() {
   const fetchDiary = async (dateStr: string) => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://192.168.29.77:5000/AddDiary?date=${dateStr}`);
+      const res = await axios.get(`${Api_url}/AddDiary?date=${dateStr}`);
       const filtered = (res.data || []).filter((entry: any) => entry.date === dateStr);
       setDiaryData(filtered);
     } catch (err) {

@@ -57,27 +57,39 @@ const TimetableView = () => {
   };
 
   const fetchTeacherTimetable = async () => {
-    try {
-      const res = await axios.get(`${Api_url}/timetable`);
-      const timetables = res.data?.data || [];
-      const schedule = {};
-      days.forEach(day => schedule[day] = Array(timeSlots.length).fill('Break'));
+  try {
+    const res = await axios.get(`${Api_url}/timetable`);
+    const timetables = res.data?.data || [];
 
-      timetables.forEach(({ className, entries }) => {
-        days.forEach(day => {
-          entries[day]?.forEach((slot, index) => {
-            if (slot?.includes(selectedTeacher)) {
-              schedule[day][index] = `${slot} (${className})`;
-            }
-          });
+    // Initialize all days with Break
+    const schedule = {};
+    days.forEach(day => {
+      schedule[day] = Array(timeSlots.length).fill('Break');
+    });
+
+    timetables.forEach(({ className, entries }) => {
+      days.forEach(day => {
+        const daySlots = entries[day] || [];
+        timeSlots.forEach((_, index) => {
+          const slot = daySlots[index] ?? 'Break';
+          if (
+            typeof slot === 'string' &&
+            selectedTeacher &&
+            slot.toLowerCase().includes(selectedTeacher.toLowerCase().trim())
+          ) {
+            schedule[day][index] = `${slot} (${className})`;
+          }
         });
       });
-      setDisplaySchedule(schedule);
-    } catch (err) {
-      console.error('Error fetching teacher timetable:', err);
-      setDisplaySchedule({});
-    }
-  };
+    });
+
+    setDisplaySchedule(schedule);
+  } catch (err) {
+    console.error('Error fetching teacher timetable:', err);
+    setDisplaySchedule({});
+  }
+};
+
 
   useEffect(() => {
     setIsLoading(true);

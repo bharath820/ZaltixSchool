@@ -13,6 +13,7 @@ import { Card, Title, Paragraph, Button } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { WebView } from 'react-native-webview';
+import {Api_url} from './config/config.js'
 
 interface Achievement {
   id: string;
@@ -24,7 +25,7 @@ interface Achievement {
   fileType: 'pdf' | 'image/jpeg' | 'image/png';
 }
 
-const BASE_URL = 'http://192.168.29.77:5000'; // ✅ Change to your server IP
+// const BASE_URL = 'http://13.203.156.49:5000'; // ✅ Change to your server IP
 
 const AchievementsScreen = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -36,7 +37,7 @@ const AchievementsScreen = () => {
   useEffect(() => {
     const fetchAchievements = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/achievements`);
+        const res = await fetch(`${Api_url}/achievements`);
         const data = await res.json();
         const achievementsArray = Array.isArray(data)
           ? data
@@ -50,7 +51,7 @@ const AchievementsScreen = () => {
           description: item.description || '-',
           fileUrl: item.fileUrl?.startsWith('http')
             ? item.fileUrl
-            : `${BASE_URL}${item.fileUrl}`,
+            : `${Api_url}/${item.fileUrl}`,
           fileType: item.fileType || 'image/jpeg',
         }));
 

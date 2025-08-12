@@ -1,6 +1,3 @@
-
-
-
 // routes/addBus.js
 import express from 'express';
 import BusEntry from '../models/AddBus.js';
@@ -52,4 +49,21 @@ router.get('/:busId', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+// Delete a bus by ID
+// Delete a bus by MongoDB _id
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedBus = await BusEntry.findByIdAndDelete(req.params.id);
+    if (!deletedBus) {
+      return res.status(404).json({ error: 'Bus not found' });
+    }
+    res.json({ message: 'Bus deleted successfully', bus: deletedBus });
+  } catch (err) {
+    console.error('Delete error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 export default router;

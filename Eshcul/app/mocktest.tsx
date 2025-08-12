@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, Alert } from 'reac
 import { Card } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
+import {Api_url} from './config/config.js'
 
 export default function MockTestsScreen() {
   const [mockTests, setMockTests] = useState([]);
@@ -10,7 +11,7 @@ export default function MockTestsScreen() {
 
   const fetchMockTests = async () => {
     try {
-      const response = await axios.get('http://192.168.29.77:5000/AddTest');
+      const response = await axios.get(`${Api_url}/AddTest`);
       const data = response.data;
       console.log('Fetched mock tests:', data);
 

@@ -1,7 +1,6 @@
 import express from 'express';
-import TeacherFeedback from '../models/AddFeedback.js'; // Import the TeacherFeedback model
+import TeacherFeedback from '../models/AddFeedback.js';
 const router = express.Router();
-
 
 // GET all feedbacks
 router.get('/', async (req, res) => {
@@ -33,32 +32,63 @@ router.post('/', async (req, res) => {
 
   try {
     const saved = await newFeedback.save();
-    res.status(201).json(saved);
+    res.status(201).json({ success: true, insertedId: saved._id });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// PUT to update status (optional)
+// PUT update feedback
 router.put('/:id', async (req, res) => {
   try {
-    const feedback = await TeacherFeedback.findById(req.params.id);
-    if (!feedback) return res.status(404).json({ message: 'Feedback not found.' });
+    const existing = await TeacherFeedback.findById(req.params.id);
+    if (!existing) {
+      return res.status(404).json({ message: 'Feedback not found.' });
+    }
 
-    if (req.body.status) feedback.status = req.body.status;
-    const updated = await feedback.save();
-    res.json(updated);
+    // Merge existing data with updates
+    const updatedData = {
+      ...existing.toObject(),
+      ...req.body,
+    };
+
+    const updated = await TeacherFeedback.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      { new: true, runValidators: true }
+    );
+
+    res.json({ success: true, updated });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
+});// PUT to update feedback
+router.put('/:id', async (req, res) => {
+  try {
+    const updated = await TeacherFeedback.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Feedback not found.' });
+    }
+
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ success: false, message: err.message });
+  }
 });
 
-// DELETE feedback (optional)
+
+// DELETE feedback
 router.delete('/:id', async (req, res) => {
   try {
     const feedback = await TeacherFeedback.findByIdAndDelete(req.params.id);
     if (!feedback) return res.status(404).json({ message: 'Feedback not found.' });
-    res.json({ message: 'Deleted successfully' });
+    res.json({ success: true, message: 'Deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

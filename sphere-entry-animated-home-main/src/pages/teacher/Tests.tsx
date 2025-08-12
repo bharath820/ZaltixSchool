@@ -27,7 +27,7 @@ const Tests = () => {
 
   const fetchTests = async () => {
     try {
-      const res = await axios.get(`${Api_url} /AddTest`);
+      const res = await axios.get(`${Api_url}/AddTest`);
       setTests(res.data);
     } catch (err) {
       console.error('Error fetching tests:', err);
