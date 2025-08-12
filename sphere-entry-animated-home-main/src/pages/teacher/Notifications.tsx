@@ -9,7 +9,7 @@ import { ArrowLeft, Plus, Send, Edit, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {Api_url} from '../config/config.js'
+import { Api_url } from '../config/config.js';
 
 const Notifications = () => {
   const navigate = useNavigate();
@@ -55,7 +55,6 @@ const Notifications = () => {
         await axios.post(`${Api_url}/AddNotification`, {
           ...formData,
           status: 'Sent',
-          date: new Date().toISOString().split('T')[0],
         });
         toast.success('Notification sent successfully!');
       }
@@ -224,7 +223,6 @@ const Notifications = () => {
                     <TableHead>Audience</TableHead>
                     <TableHead>Delivery Method</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
                     <TableHead className="text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -246,7 +244,6 @@ const Notifications = () => {
                             {notification.status}
                           </span>
                         </TableCell>
-                        <TableCell>{notification.date}</TableCell>
                         <TableCell className="text-center">
                           <div className="flex justify-center space-x-2">
                             <Button size="sm" variant="outline" onClick={() => handleEdit(notification)}>
@@ -261,7 +258,7 @@ const Notifications = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center text-gray-500">
+                      <TableCell colSpan={5} className="text-center text-gray-500">
                         No notifications found
                       </TableCell>
                     </TableRow>
