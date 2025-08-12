@@ -32,6 +32,20 @@ const PrincipalDashboard = () => {
       gradient: 'bg-gradient-to-br from-purple-100 to-purple-200'
     },
     {
+      title: 'Fee Reports',
+      description: 'Financial collections & dues',
+      icon: <DollarSign className="w-6 h-6" />,
+      path: '/dashboard/principal/fees',
+      gradient: 'bg-gradient-to-br from-red-100 to-red-200'
+    },
+    {
+      title: 'Notifications',
+      description: 'Message history & delivery',
+      icon: <Bell className="w-6 h-6" />,
+      path: '/dashboard/principal/notifications',
+      gradient: 'bg-gradient-to-br from-indigo-100 to-indigo-200'
+    },
+    {
       title: 'Staff Management',
       description: 'Monitor staff & assignments',
       icon: <Users className="w-6 h-6" />,
@@ -46,32 +60,18 @@ const PrincipalDashboard = () => {
       gradient: 'bg-gradient-to-br from-yellow-100 to-yellow-200'
     },
     {
+      title: 'Feedback',
+      description: 'Parent & teacher feedback',
+      icon: <MessageSquare className="w-6 h-6" />,
+      path: '/dashboard/principal/feedback',
+      gradient: 'bg-gradient-to-br from-cyan-100 to-cyan-200'
+    },
+    {
       title: 'Academic Reports',
       description: 'Performance & analytics',
       icon: <FileText className="w-6 h-6" />,
       path: '/dashboard/principal/reports',
       gradient: 'bg-gradient-to-br from-orange-100 to-orange-200'
-    },
-    {
-      title: 'Fee Reports',
-      description: 'Financial collections & dues',
-      icon: <DollarSign className="w-6 h-6" />,
-      path: '/dashboard/principal/fees',
-      gradient: 'bg-gradient-to-br from-red-100 to-red-200'
-    },
-    {
-      title: 'Inventory',
-      description: 'Stock management & alerts',
-      icon: <Package className="w-6 h-6" />,
-      path: '/dashboard/principal/inventory',
-      gradient: 'bg-gradient-to-br from-teal-100 to-teal-200'
-    },
-    {
-      title: 'Notifications',
-      description: 'Message history & delivery',
-      icon: <Bell className="w-6 h-6" />,
-      path: '/dashboard/principal/notifications',
-      gradient: 'bg-gradient-to-br from-indigo-100 to-indigo-200'
     },
     {
       title: 'Achievements',
@@ -81,11 +81,11 @@ const PrincipalDashboard = () => {
       gradient: 'bg-gradient-to-br from-pink-100 to-pink-200'
     },
     {
-      title: 'Feedback',
-      description: 'Parent & teacher feedback',
-      icon: <MessageSquare className="w-6 h-6" />,
-      path: '/dashboard/principal/feedback',
-      gradient: 'bg-gradient-to-br from-cyan-100 to-cyan-200'
+      title: 'Inventory',
+      description: 'Stock management & alerts',
+      icon: <Package className="w-6 h-6" />,
+      path: '/dashboard/principal/inventory',
+      gradient: 'bg-gradient-to-br from-teal-100 to-teal-200'
     },
     {
       title: 'Bus Tracking',
