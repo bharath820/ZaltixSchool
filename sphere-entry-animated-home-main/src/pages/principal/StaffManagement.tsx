@@ -9,7 +9,6 @@ import * as XLSX from 'xlsx';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {Api_url} from '../config/config.js'
 
 interface Staff {
   id: string;
@@ -35,8 +34,9 @@ const StaffManagement = () => {
 
   const fetchStaffData = async () => {
     try {
-      const res = await axios.get(`${Api_url}/AddStaff`);
+      const res = await axios.get('http://localhost:5000/AddStaff');
       setStaffData(res.data);
+      // ❌ Removed toast calls here to prevent notifications on load
     } catch (error) {
       console.error('Failed to fetch staff data:', error);
     }
@@ -44,7 +44,7 @@ const StaffManagement = () => {
 
   const handleAddStaff = async (newStaff: Staff) => {
     try {
-      await axios.post(`${Api_url}/AddStaff`, newStaff);
+      await axios.post('http://localhost:5000/AddStaff', newStaff);
       fetchStaffData();
       setShowAddModal(false);
       toast.success('New staff added!', { autoClose: 1500 });
