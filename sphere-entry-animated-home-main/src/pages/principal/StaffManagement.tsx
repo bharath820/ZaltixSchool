@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Download, User, Search, Plus } from 'lucide-react';
+import { ArrowLeft, Download, User, Search, Plus, Trash2 } from 'lucide-react';
 import AddStaffModal from '@/components/AddStaffModal';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Api_url } from '../config/config.js';
 
 interface Staff {
   id: string;
@@ -34,9 +35,8 @@ const StaffManagement = () => {
 
   const fetchStaffData = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/AddStaff');
+      const res = await axios.get(`${Api_url}/AddStaff`);
       setStaffData(res.data);
-      // ❌ Removed toast calls here to prevent notifications on load
     } catch (error) {
       console.error('Failed to fetch staff data:', error);
     }
@@ -44,7 +44,7 @@ const StaffManagement = () => {
 
   const handleAddStaff = async (newStaff: Staff) => {
     try {
-      await axios.post('http://localhost:5000/AddStaff', newStaff);
+      await axios.post(`${Api_url}/AddStaff`, newStaff);
       fetchStaffData();
       setShowAddModal(false);
       toast.success('New staff added!', { autoClose: 1500 });
@@ -54,14 +54,27 @@ const StaffManagement = () => {
     }
   };
 
-  const filteredStaff = staffData.filter(staff =>
-    staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    staff.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    staff.subjects.some(subject => subject.toLowerCase().includes(searchTerm.toLowerCase()))
+  const handleDeleteStaff = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this staff member?')) return;
+    try {
+      await axios.delete(`${Api_url}/AddStaff/${id}`);
+      toast.success('Staff deleted successfully!', { autoClose: 1500 });
+      fetchStaffData();
+    } catch (error) {
+      console.error('Error deleting staff:', error);
+      toast.error('Failed to delete staff.', { autoClose: 1500 });
+    }
+  };
+
+  const filteredStaff = staffData.filter(
+    (staff) =>
+      staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      staff.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      staff.subjects.some((subject) => subject.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const exportStaffList = () => {
-    const exportData = staffData.map(staff => ({
+    const exportData = staffData.map((staff) => ({
       Name: staff.name,
       Role: staff.role,
       Department: staff.subjects.join(', '),
@@ -86,11 +99,18 @@ const StaffManagement = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
           <div className="w-full md:w-auto">
-            <Button onClick={() => navigate('/dashboard/principal')} variant="outline" size="sm" className="w-full md:w-auto">
+            <Button
+              onClick={() => navigate('/dashboard/principal')}
+              variant="outline"
+              size="sm"
+              className="w-full md:w-auto"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
             </Button>
           </div>
-          <h1 className="text-xl md:text-2xl font-bold text-center md:text-left">Staff Management</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-center md:text-left">
+            Staff Management
+          </h1>
           <div className="flex flex-wrap md:flex-nowrap gap-2 justify-center md:justify-end">
             <Button onClick={() => setShowAddModal(true)} className="bg-blue-600 text-white">
               <Plus className="w-4 h-4 mr-1" /> Add Staff
@@ -133,7 +153,7 @@ const StaffManagement = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {staffData.filter(s => s.role.toLowerCase().includes('teacher')).length}
+                {staffData.filter((s) => s.role.toLowerCase().includes('teacher')).length}
               </div>
               <p className="text-xs text-muted-foreground">Teaching staff</p>
             </CardContent>
@@ -145,7 +165,7 @@ const StaffManagement = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {staffData.filter(s => s.status === 'On Leave').length}
+                {staffData.filter((s) => s.status === 'On Leave').length}
               </div>
               <p className="text-xs text-muted-foreground">Currently absent</p>
             </CardContent>
@@ -178,6 +198,7 @@ const StaffManagement = () => {
                     <th className="py-2 text-left text-sm">Classes</th>
                     <th className="py-2 text-left text-sm">Join Date</th>
                     <th className="py-2 text-left text-sm">Status</th>
+                    <th className="py-2 text-left text-sm">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -191,7 +212,10 @@ const StaffManagement = () => {
                       <td className="py-2">
                         <div className="flex flex-wrap gap-1">
                           {staff.subjects.map((subject, index) => (
-                            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                            <span
+                              key={index}
+                              className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                            >
                               {subject}
                             </span>
                           ))}
@@ -200,7 +224,10 @@ const StaffManagement = () => {
                       <td className="py-2">
                         <div className="flex flex-wrap gap-1">
                           {staff.classes.map((cls, index) => (
-                            <span key={index} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                            <span
+                              key={index}
+                              className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded"
+                            >
                               {cls}
                             </span>
                           ))}
@@ -208,13 +235,25 @@ const StaffManagement = () => {
                       </td>
                       <td className="py-2">{staff.joinDate}</td>
                       <td className="py-2">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          staff.status === 'Active' ? 'bg-green-100 text-green-800' :
-                          staff.status === 'On Leave' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            staff.status === 'Active'
+                              ? 'bg-green-100 text-green-800'
+                              : staff.status === 'On Leave'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
                           {staff.status}
                         </span>
+                      </td>
+                      <td className="py-2">
+                        <button
+                          onClick={() => handleDeleteStaff(staff.id)}
+                          className="text-red-600 hover:text-red-800 p-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))}
