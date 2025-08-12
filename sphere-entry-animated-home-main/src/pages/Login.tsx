@@ -156,7 +156,5 @@ const Login = () => {
       </div>
     </div>
   );
-};
-//Anjali chnaged the code//
 
-export default Login;
+export default Log;
