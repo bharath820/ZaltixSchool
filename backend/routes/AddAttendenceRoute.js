@@ -238,7 +238,7 @@ router.get('/class-attendance-summary', (req, res) => {
 // Returns array: [{ period: "Aug 7", present: X, absent: Y }, ...]
 import { subDays, subWeeks, subMonths, format, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval } from 'date-fns';
 
-router.get('/attendance-trends', async function (req, res) {
+router.get('/attendance-trends', async (req, res) => {
     const { viewType = 'weekly', class: className } = req.query;
     // Only fetch for the past N days/weeks/months up to today
     const now = new Date();

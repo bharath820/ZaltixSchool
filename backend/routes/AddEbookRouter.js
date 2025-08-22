@@ -114,7 +114,7 @@ router.put(
     { name: "pdf", maxCount: 1 },
     { name: "coverImage", maxCount: 1 },
   ]),
-  async function (req, res) {
+  async (req, res) => {
     try {
       const { title, author, subject, class: bookClass } = req.body;
       const ebook = await Ebook.findById(req.params.id).exec();
