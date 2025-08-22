@@ -114,11 +114,17 @@ router.put(
     { name: "pdf", maxCount: 1 },
     { name: "coverImage", maxCount: 1 },
   ]),
-  async (req, res) => {
+  async function updateEbook(req, res) {
     try {
-      const { title, author, subject, class: bookClass } = req.body;
+      const title = req.body.title;
+      const author = req.body.author;
+      const subject = req.body.subject;
+      const bookClass = req.body.class;
+
       const ebook = await Ebook.findById(req.params.id).exec();
-      if (!ebook) return res.status(404).json({ error: "E-book not found" });
+      if (!ebook) {
+        return res.status(404).json({ error: "E-book not found" });
+      }
 
       // Update fields
       if (title) ebook.title = title;
@@ -130,39 +136,48 @@ router.put(
       if (req.files && req.files["pdf"]) {
         // Delete old PDF
         if (ebook.pdfUrl) {
-          fs.unlink(path.join('uploads', path.basename(ebook.pdfUrl)), err => {
-            if (err) console.error('Error deleting old PDF:', err);
-          });
+          fs.unlink(
+            path.join("uploads", path.basename(ebook.pdfUrl)),
+            function (err) {
+              if (err) console.error("Error deleting old PDF:", err);
+            }
+          );
         }
         const pdfFile = req.files["pdf"][0];
-        ebook.pdfUrl = `/uploads/${pdfFile.filename}`;
+        ebook.pdfUrl = "/uploads/" + pdfFile.filename;
         ebook.fileSize = formatFileSize(pdfFile.size);
       }
+
       if (req.files && req.files["coverImage"]) {
         // Delete old cover image
         if (ebook.coverImageUrl) {
-          fs.unlink(path.join('uploads', path.basename(ebook.coverImageUrl)), err => {
-            if (err) console.error('Error deleting old cover image:', err);
-          });
+          fs.unlink(
+            path.join("uploads", path.basename(ebook.coverImageUrl)),
+            function (err) {
+              if (err) console.error("Error deleting old cover image:", err);
+            }
+          );
         }
         const coverImageFile = req.files["coverImage"][0];
-        ebook.coverImageUrl = `/uploads/${coverImageFile.filename}`;
+        ebook.coverImageUrl = "/uploads/" + coverImageFile.filename;
       }
 
       await ebook.save();
-      res.json(ebook);
+      return res.json(ebook);
     } catch (error) {
       // Clean up uploaded files if error occurs
       if (req.files) {
-        Object.values(req.files).forEach(function (files) {
-          files.forEach(function (file) {
-            fs.unlink(path.join('uploads', file.filename), function (err) {
-              if (err) console.error('Error deleting file:', err);
+        Object.keys(req.files).forEach(function (field) {
+          req.files[field].forEach(function (file) {
+            fs.unlink(path.join("uploads", file.filename), function (err) {
+              if (err) console.error("Error deleting file:", err);
             });
           });
         });
       }
-      res.status(500).json({ error: error.message || "Failed to update e-book" });
+      return res
+        .status(500)
+        .json({ error: error.message || "Failed to update e-book" });
     }
   }
 );
