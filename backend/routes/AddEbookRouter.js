@@ -99,7 +99,7 @@ router.get("/", async (req, res) => {
 // READ: Get single ebook by ID
 router.get("/:id", async (req, res) => {
   try {
-    const ebook = await Ebook.findById(req.params.id);
+    const ebook = await Ebook.findById(req.params.id).exec();
     if (!ebook) return res.status(404).json({ error: "E-book not found" });
     res.json(ebook);
   } catch (error) {
@@ -114,10 +114,10 @@ router.put(
     { name: "pdf", maxCount: 1 },
     { name: "coverImage", maxCount: 1 },
   ]),
-  async (req, res) => {
+  async function (req, res) {
     try {
       const { title, author, subject, class: bookClass } = req.body;
-      const ebook = await Ebook.findById(req.params.id);
+      const ebook = await Ebook.findById(req.params.id).exec();
       if (!ebook) return res.status(404).json({ error: "E-book not found" });
 
       // Update fields
@@ -160,7 +160,7 @@ router.put(
               if (err) console.error('Error deleting file:', err);
             });
           });
-          });
+        });
       }
       res.status(500).json({ error: error.message || "Failed to update e-book" });
     }
@@ -170,7 +170,7 @@ router.put(
 // DELETE: Remove e-book and files
 router.delete("/:id", async (req, res) => {
   try {
-    const book = await Ebook.findByIdAndDelete(req.params.id);
+    const book = await Ebook.findByIdAndDelete(req.params.id).exec();
     if (!book) return res.status(404).json({ error: "E-book not found" });
 
     // Delete associated files

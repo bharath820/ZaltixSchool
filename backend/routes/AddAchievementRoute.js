@@ -49,7 +49,7 @@ router.post('/', uploadAchievement.single('file'), async (req, res) => {
 // GET - Fetch All Achievements
 router.get('/', async (req, res) => {
   try {
-    const achievements = await Achievement.find().sort({ date: -1 });
+    const achievements = await Achievement.find().sort({ date: -1 }).exec();
     res.status(200).json(achievements);
   } catch (err) {
     res.status(500).json({ 
@@ -76,7 +76,7 @@ router.delete('/:id', (req, res) => {
         }
       }
 
-      return Achievement.findByIdAndDelete(req.params.id);
+      return Achievement.findByIdAndDelete(req.params.id).exec();
     })
     .then(() => {
       res.status(200).json({ message: 'Achievement deleted successfully' });

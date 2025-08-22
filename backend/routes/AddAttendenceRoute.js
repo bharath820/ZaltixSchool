@@ -238,61 +238,60 @@ router.get('/class-attendance-summary', (req, res) => {
 // Returns array: [{ period: "Aug 7", present: X, absent: Y }, ...]
 import { subDays, subWeeks, subMonths, format, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval } from 'date-fns';
 
-router.get('/attendance-trends', async (req, res) => {
-  const { viewType = 'weekly', class: className } = req.query;
-  // Only fetch for the past N days/weeks/months up to today
-  const now = new Date();
+router.get('/attendance-trends', async function (req, res) {
+    const { viewType = 'weekly', class: className } = req.query;
+    // Only fetch for the past N days/weeks/months up to today
+    const now = new Date();
 
-  let dates = [];
-  if (viewType === 'daily') {
-    dates = eachDayOfInterval({ start: subDays(now, 6), end: now });
-  } else if (viewType === 'weekly') {
-    dates = eachWeekOfInterval({ start: subMonths(now, 1), end: now });
-  } else {
-    dates = eachMonthOfInterval({ start: subMonths(now, 6), end: now });
-  }
-  // For each date period, query attendance
-  try {
-    const query = {};
-    if (className) query['student.class'] = className;
+    let dates = [];
+    if (viewType === 'daily') {
+      dates = eachDayOfInterval({ start: subDays(now, 6), end: now });
+    } else if (viewType === 'weekly') {
+      dates = eachWeekOfInterval({ start: subMonths(now, 1), end: now });
+    } else {
+      dates = eachMonthOfInterval({ start: subMonths(now, 6), end: now });
+    }
+    // For each date period, query attendance
+    try {
+      const query = {};
+      if (className) query['student.class'] = className;
 
-    const students = await Attendance.find(query);
+      const students = await Attendance.find(query).exec();
 
-    const data = dates.map(date => {
-      let dateStr;
-      if (viewType === 'daily') dateStr = format(date, 'yyyy-MM-dd');
-      else if (viewType === 'weekly') dateStr = format(date, 'yyyy-MM-dd');
-      else dateStr = format(date, 'yyyy-MM');
+      const data = dates.map(date => {
+        let dateStr;
+        if (viewType === 'daily') dateStr = format(date, 'yyyy-MM-dd');
+        else if (viewType === 'weekly') dateStr = format(date, 'yyyy-MM-dd');
+        else dateStr = format(date, 'yyyy-MM');
 
-      let present = 0;
-      let absent = 0;
-      students.forEach(s => {
-        let match = null;
-        // Aggregate for week/month: consider students present for any day in the week/month as present
-        if (viewType === 'daily') {
-          match = s.attendance.find(a => a.date === dateStr);
-        } else if (viewType === 'weekly') {
-          match = s.attendance.find(a => 
-            format(new Date(a.date), 'yyyy-MM-dd') >= format(date, 'yyyy-MM-dd') &&
-            format(new Date(a.date), 'yyyy-MM-dd') <= format(subDays(date, 6), 'yyyy-MM-dd')
-          );
-        } else if (viewType === 'monthly') {
-          match = s.attendance.find(a => a.date.slice(0,7) === dateStr);
-        }
-        if (match && match.subjects.some(subject => subject.present)) present++;
-        else absent++;
+        let present = 0;
+        let absent = 0;
+        students.forEach(s => {
+          let match = null;
+          // Aggregate for week/month: consider students present for any day in the week/month as present
+          if (viewType === 'daily') {
+            match = s.attendance.find(a => a.date === dateStr);
+          } else if (viewType === 'weekly') {
+            match = s.attendance.find(a => format(new Date(a.date), 'yyyy-MM-dd') >= format(date, 'yyyy-MM-dd') &&
+              format(new Date(a.date), 'yyyy-MM-dd') <= format(subDays(date, 6), 'yyyy-MM-dd')
+            );
+          } else if (viewType === 'monthly') {
+            match = s.attendance.find(a => a.date.slice(0, 7) === dateStr);
+          }
+          if (match && match.subjects.some(subject => subject.present)) present++;
+          else absent++;
+        });
+        return {
+          period: viewType === 'monthly' ? format(date, 'MMM yyyy') : format(date, 'MMM dd'),
+          present,
+          absent
+        };
       });
-      return {
-        period: viewType === 'monthly' ? format(date, 'MMM yyyy') : format(date, 'MMM dd'),
-        present,
-        absent
-      };
-    });
-    res.json(data);
-  } catch (e) {
-    res.status(500).json({ error: 'Failed to get trends' });
-  }
-});
+      res.json(data);
+    } catch (e) {
+      res.status(500).json({ error: 'Failed to get trends' });
+    }
+  });
 
 // --- (Optional) Export attendance data for Excel ---
 router.get('/export-attendance', async (req, res) => {

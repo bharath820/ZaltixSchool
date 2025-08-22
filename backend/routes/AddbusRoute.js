@@ -29,7 +29,7 @@ router.get('/:busId', async (req, res) => {
     const bus = await BusEntry.findOne({ busId }).exec();
     if (!bus) return res.status(404).json({ error: 'Bus not found' });
 
-    const students = await Student.find({ busId });
+    const students = await Student.find({ busId }).exec();
     const enriched = students.map(student => ({
       studentId: student._id.toString(),
       studentName: student.studentName,
