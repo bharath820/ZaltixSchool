@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
 // GET /studentfeedback
 router.get('/', async (req, res) => {
   try {
-    const feedbackList = await StudentFeedback.find().sort({ createdAt: -1 }); // Most recent first
+    const feedbackList = await StudentFeedback.find().sort({ createdAt: -1 }).exec(); // Most recent first
     res.json(feedbackList);
   } catch (err) {
     console.error('Error fetching feedback:', err.message);

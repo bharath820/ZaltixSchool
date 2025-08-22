@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Get all buses
 router.get('/', async (req, res) => {
-  const data = await BusEntry.find();
+  const data = await BusEntry.find().exec();
   res.json(data);
 });
 
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
 router.get('/:busId', async (req, res) => {
   try {
     const { busId } = req.params;
-    const bus = await BusEntry.findOne({ busId });
+    const bus = await BusEntry.findOne({ busId }).exec();
     if (!bus) return res.status(404).json({ error: 'Bus not found' });
 
     const students = await Student.find({ busId });
@@ -54,7 +54,7 @@ router.get('/:busId', async (req, res) => {
 // Delete a bus by MongoDB _id
 router.delete('/:id', async (req, res) => {
   try {
-    const deletedBus = await BusEntry.findByIdAndDelete(req.params.id);
+    const deletedBus = await BusEntry.findByIdAndDelete(req.params.id).exec();
     if (!deletedBus) {
       return res.status(404).json({ error: 'Bus not found' });
     }

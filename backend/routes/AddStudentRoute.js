@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/Addstudent', async (req, res) => {
   try {
-    const existingStudent = await AddStudent.findOne({ name: req.body.name });
+    const existingStudent = await AddStudent.findOne({ name: req.body.name }).exec();
     if (existingStudent) {
       return res.status(409).json({ error: 'Student with this Name already exists' });
     }

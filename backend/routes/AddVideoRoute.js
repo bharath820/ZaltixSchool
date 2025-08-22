@@ -7,7 +7,7 @@ const router = express.Router();
 // GET all videos
 router.get('/', async (req, res) => {
   try {
-    const videos = await Video.find().sort({ createdAt: -1 });
+    const videos = await Video.find().sort({ createdAt: -1 }).exec();
     res.json(videos);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch videos' });
@@ -39,7 +39,7 @@ router.put('/:id', async (req, res) => {
       req.params.id,
       { title, subject, url },
       { new: true }
-    );
+    ).exec();
     res.json(updated);
   } catch (err) {
     res.status(400).json({ error: 'Failed to update video' });
@@ -49,7 +49,7 @@ router.put('/:id', async (req, res) => {
 // DELETE a video
 router.delete('/:id', async (req, res) => {
   try {
-    await Video.findByIdAndDelete(req.params.id);
+    await Video.findByIdAndDelete(req.params.id).exec();
     res.json({ message: 'Video deleted' });
   } catch (err) {
     res.status(400).json({ error: 'Failed to delete video' });

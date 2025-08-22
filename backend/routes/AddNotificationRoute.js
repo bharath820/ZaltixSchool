@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
 // Get all notifications
 router.get('/', async (req, res) => {
   try {
-    const notifications = await Notification.find().sort({ createdAt: -1 });
+    const notifications = await Notification.find().sort({ createdAt: -1 }).exec();
     res.json(notifications);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 // Get a single notification by ID
 router.get('/:id', async (req, res) => {
   try {
-    const notification = await Notification.findById(req.params.id);
+    const notification = await Notification.findById(req.params.id).exec();
     if (!notification) return res.status(404).json({ message: 'Not found' });
     res.json(notification);
   } catch (error) {
@@ -37,7 +37,7 @@ router.get('/:id', async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try { 
-    const updatedNotification = await Notification.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedNotification = await Notification.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec();
     if (!updatedNotification) return res.status(404).json({ message: 'Not found' });
     res.json(updatedNotification);  
     } catch (error) {   
@@ -48,7 +48,7 @@ router.put("/:id", async (req, res) => {
 // Delete a notification
 router.delete('/:id', async (req, res) => {
   try {
-    const deleted = await Notification.findByIdAndDelete(req.params.id);
+    const deleted = await Notification.findByIdAndDelete(req.params.id).exec();
     if (!deleted) return res.status(404).json({ message: 'Not found' });
     res.json({ message: 'Deleted successfully' });
   } catch (error) {

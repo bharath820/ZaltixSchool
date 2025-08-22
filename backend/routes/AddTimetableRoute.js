@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const existing = await Timetable.findOne({ className, section, academicYear });
+    const existing = await Timetable.findOne({ className, section, academicYear }).exec();
 
     if (existing) {
       existing.entries = entries;
@@ -35,7 +35,7 @@ router.get('/:className', async (req, res) => {
   const { className } = req.params;
 
   try {
-    const timetable = await Timetable.findOne({ className });
+    const timetable = await Timetable.findOne({ className }).exec();
 
     if (!timetable) {
       return res.status(404).json({ message: 'Timetable not found' });

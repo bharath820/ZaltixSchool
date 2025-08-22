@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
 // Read all
 router.get('/', async (req, res) => {
   try {
-    const projects = await Project.find();
+    const projects = await Project.find().exec();
     res.json(projects);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 // Update
 router.put('/:id', async (req, res) => {
   try {
-    const updated = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec() ;
     res.json(updated);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -37,7 +37,7 @@ router.put('/:id', async (req, res) => {
 // Delete
 router.delete('/:id', async (req, res) => {
   try {
-    await Project.findByIdAndDelete(req.params.id);
+    await Project.findByIdAndDelete(req.params.id).exec();
     res.json({ message: 'Deleted' });
   } catch (err) {
     res.status(500).json({ error: err.message });

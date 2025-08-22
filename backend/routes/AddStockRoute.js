@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const items = await AddStock.find();
+    const items = await AddStock.find().exec();
     res.json(items);
   } catch (err) {
     console.error('Fetch error:', err);
@@ -53,7 +53,7 @@ router.put('/:id', async (req, res) => {
         vendor: req.body.vendor
       },
       { new: true }
-    );
+    ).exec();
     res.json(updated);
   } catch (err) {
     console.error('Update error:', err);
@@ -63,7 +63,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    const deleted = await AddStock.findByIdAndDelete(req.params.id);
+    const deleted = await AddStock.findByIdAndDelete(req.params.id).exec();
     if (!deleted) {
       return res.status(404).json({ error: 'Item not found' });
     }

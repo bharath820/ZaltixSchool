@@ -5,7 +5,7 @@ const router = express.Router();
 // GET all feedbacks
 router.get('/', async (req, res) => {
   try {
-    const feedbacks = await TeacherFeedback.find().sort({ date: -1 });
+    const feedbacks = await TeacherFeedback.find().sort({ date: -1 }).exec();
     res.json(feedbacks);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 // PUT update feedback
 router.put('/:id', async (req, res) => {
   try {
-    const existing = await TeacherFeedback.findById(req.params.id);
+    const existing = await TeacherFeedback.findById(req.params.id).exec();
     if (!existing) {
       return res.status(404).json({ message: 'Feedback not found.' });
     }
@@ -56,7 +56,7 @@ router.put('/:id', async (req, res) => {
       req.params.id,
       updatedData,
       { new: true, runValidators: true }
-    );
+    ).exec();
 
     res.json({ success: true, updated });
   } catch (err) {
@@ -69,7 +69,7 @@ router.put('/:id', async (req, res) => {
       req.params.id,
       { ...req.body },
       { new: true, runValidators: true }
-    );
+    ).exec();
 
     if (!updated) {
       return res.status(404).json({ message: 'Feedback not found.' });
@@ -86,7 +86,7 @@ router.put('/:id', async (req, res) => {
 // DELETE feedback
 router.delete('/:id', async (req, res) => {
   try {
-    const feedback = await TeacherFeedback.findByIdAndDelete(req.params.id);
+    const feedback = await TeacherFeedback.findByIdAndDelete(req.params.id).exec();
     if (!feedback) return res.status(404).json({ message: 'Feedback not found.' });
     res.json({ success: true, message: 'Deleted successfully' });
   } catch (err) {

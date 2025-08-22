@@ -6,7 +6,7 @@ const router = express.Router();
 // GET all reports
 router.get('/', async (req, res) => {
   try {
-    const reports = await Report.find();
+    const reports = await Report.find().exec();
     res.json(reports);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch reports' });
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:className', async (req, res) => {
   try {
-    const students = await Report.find({ class: req.params.className });
+    const students = await Report.find({ class: req.params.className }).exec();
     res.json(students);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch students' });
@@ -28,7 +28,7 @@ router.get('/student/:name', async (req, res) => {
   try {
     const student = await Report.findOne({
       name: { $regex: new RegExp('^' + req.params.name + '$', 'i') }
-    });
+    }).exec();
     if (!student) return res.status(404).json({ error: 'Student not found' });
     res.json(student);
   } catch(err) {
@@ -126,7 +126,7 @@ router.put('/:id', async (req, res) => {
         grade,
       },
       { new: true }
-    );
+    ).exec();
 
     res.json(updated);
   } catch (err) {
@@ -139,7 +139,7 @@ router.put('/:id', async (req, res) => {
 // DELETE a student
 router.delete('/:id', async (req, res) => {
   try {
-    await Report.findByIdAndDelete(req.params.id);
+    await Report.findByIdAndDelete(req.params.id).exec();
     res.json({ message: 'Student deleted' });
   } catch (err) {
     res.status(400).json({ error: 'Failed to delete student' });

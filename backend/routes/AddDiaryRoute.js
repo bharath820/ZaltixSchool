@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
       notes
     });
 
-    const savedEntry = await newDiaryEntry.save();
+    const savedEntry = await newDiaryEntry.save().exec();
     res.status(201).json(savedEntry);
   } catch (err) {
     console.error(err);
@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
       filter.date = { $gte: start, $lte: end };
     }
 
-    const entries = await AddDiary.find(filter).sort({ date: -1 });
+    const entries = await AddDiary.find(filter).sort({ date: -1 }).exec();
     res.json(entries);
   } catch (err) {
     console.error(err);
@@ -59,7 +59,7 @@ router.put("/:id", async (req, res) => {
       id,
       { date: new Date(date), class: studentClass, subject, notes },
       { new: true }
-    );
+    ).exec();
 
     if (!updated) {
       return res.status(404).json({ error: 'Entry not found' });
@@ -75,7 +75,7 @@ router.put("/:id", async (req, res) => {
 // Delete Diary Entry
 router.delete("/:id", async (req, res) => {
   try {
-    const deleted = await AddDiary.findByIdAndDelete(req.params.id);
+    const deleted = await AddDiary.findByIdAndDelete(req.params.id).exec() ;
     if (!deleted) {
       return res.status(404).json({ error: 'Entry not found' });
     }

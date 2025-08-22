@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 // Get All Payrolls
 router.get('/', async (req, res) => {
   try {
-    const entries = await Payroll.find();
+    const entries = await Payroll.find().exec();
     res.json(entries);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -52,7 +52,7 @@ router.put('/:id', async (req, res) => {
       req.params.id,
       { name, position, department, baseSalary, allowances, deductions, netSalary, status },
       { new: true, runValidators: true }
-    );
+    ).exec();
 
     if (!updated) return res.status(404).json({ error: 'Payroll not found' });
 
@@ -65,7 +65,7 @@ router.put('/:id', async (req, res) => {
 // Delete Payroll Entry
 router.delete('/:id', async (req, res) => {
   try {
-    const deleted = await Payroll.findByIdAndDelete(req.params.id);
+    const deleted = await Payroll.findByIdAndDelete(req.params.id).exec();
     if (!deleted) return res.status(404).json({ error: 'Payroll not found' });
 
     res.json({ message: 'Deleted successfully' });

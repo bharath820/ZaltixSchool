@@ -8,7 +8,7 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
-    const staffMembers = await AddStaff.find().lean();
+    const staffMembers = await AddStaff.find().lean().exec();
     // Convert _id to id for frontend compatibility
     const formattedStaff = staffMembers.map(s => ({
       ...s,
@@ -59,7 +59,7 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedStaff = await AddStaff.findByIdAndDelete(id);
+    const deletedStaff = await AddStaff.findByIdAndDelete(id).exec();
 
     if (!deletedStaff) {
       return res.status(404).json({ error: 'Staff not found' });

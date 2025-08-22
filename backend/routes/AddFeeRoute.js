@@ -7,7 +7,7 @@ const router = express.Router();
 // GET all fee records
 router.get('/', async (req, res) => {
   try {
-    const records = await Fee.find();
+    const records = await Fee.find().exec();
     res.json(records);
   } catch (err) {
     res.status(500).json({ error: 'Server error fetching fees' });
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 router.get('/student', async (req, res) => {
   try {
-    const records = await Fee.find();
+    const records = await Fee.find().exec();
     res.json(records);
   } catch (err) {
     res.status(500).json({ error: 'Error fetching student-wise fees' });
@@ -78,7 +78,7 @@ router.get('/class', async (req, res) => {
           _id: 0
         }
       }
-    ]);
+    ]).exec();
 
     res.json(classData);
   } catch (err) {
@@ -100,7 +100,7 @@ router.post('/', async (req, res) => {
 // PUT update fee record
 router.put('/:id', async (req, res) => {
   try {
-    const updated = await Fee.findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
+    const updated = await Fee.findOneAndUpdate({ id: req.params.id }, req.body, { new: true }).exec();
     if (!updated) return res.status(404).json({ error: 'Record not found' });
     res.json(updated);
   } catch (err) {
@@ -111,7 +111,7 @@ router.put('/:id', async (req, res) => {
 // DELETE a record by student ID
 router.delete('/:id', async (req, res) => {
   try {
-    const deleted = await Fee.findOneAndDelete({ id: req.params.id });
+    const deleted = await Fee.findOneAndDelete({ id: req.params.id }).exec();
     if (!deleted) return res.status(404).json({ error: 'Record not found' });
     res.json({ message: 'Deleted successfully' });
   } catch (err) {

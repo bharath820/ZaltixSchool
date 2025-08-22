@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
   try {
     const { className } = req.query;
     const filter = className ? { className } : {};
-    const subjects = await Subject.find(filter);
+    const subjects = await Subject.find(filter).exec();
     res.json(subjects);
   } catch {
     res.status(500).json({ error: 'Failed to fetch subjects' });
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const updated = await Subject.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Subject.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec();
     res.json(updated);
   } catch {
     res.status(500).json({ error: 'Update failed' });
@@ -37,7 +37,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    await Subject.findByIdAndDelete(req.params.id);
+    await Subject.findByIdAndDelete(req.params.id).exec();
     res.json({ message: 'Deleted' });
   } catch {
     res.status(500).json({ error: 'Delete failed' });

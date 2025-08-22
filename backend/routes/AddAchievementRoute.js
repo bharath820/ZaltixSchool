@@ -59,35 +59,34 @@ router.get('/', async (req, res) => {
   }
 });
 
+
 // DELETE - Delete Achievement
-router.delete('/:id', async (req, res) => {
-  try {
-    const achievement = await Achievement.findById(req.params.id);
-    
-    if (!achievement) {
-      return res.status(404).json({ 
-        message: 'Achievement not found' 
-      });
-    }
-
-    // Delete associated file if exists
-    if (achievement.fileUrl) {
-      const filePath = path.join(process.cwd(), achievement.fileUrl);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+router.delete('/:id', (req, res) => {
+  Achievement.findById(req.params.id)
+    .then(achievement => {
+      if (!achievement) {
+        return res.status(404).json({ message: 'Achievement not found' });
       }
-    }
 
-    await Achievement.findByIdAndDelete(req.params.id);
-    res.status(200).json({ 
-      message: 'Achievement deleted successfully' 
+      // Delete associated file if exists
+      if (achievement.fileUrl) {
+        const filePath = path.join(process.cwd(), achievement.fileUrl);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+
+      return Achievement.findByIdAndDelete(req.params.id);
+    })
+    .then(() => {
+      res.status(200).json({ message: 'Achievement deleted successfully' });
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: 'Failed to delete achievement',
+        error: err.message
+      });
     });
-  } catch (err) {
-    res.status(500).json({ 
-      message: 'Failed to delete achievement',
-      error: err.message 
-    });
-  }
 });
 
 export default router;

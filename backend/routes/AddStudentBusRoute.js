@@ -7,7 +7,7 @@ const router = express.Router();
 // Get all students
 router.get('/', async (req, res) => {
   try {
-    const students = await Student.find();
+    const students = await Student.find().exec();
     res.status(200).json(students);
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
