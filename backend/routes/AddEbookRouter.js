@@ -154,13 +154,13 @@ router.put(
     } catch (error) {
       // Clean up uploaded files if error occurs
       if (req.files) {
-        Object.values(req.files).forEach(files => {
-          files.forEach(file => {
-            fs.unlink(path.join('uploads', file.filename), err => {
+        Object.values(req.files).forEach(function (files) {
+          files.forEach(function (file) {
+            fs.unlink(path.join('uploads', file.filename), function (err) {
               if (err) console.error('Error deleting file:', err);
             });
           });
-        });
+          });
       }
       res.status(500).json({ error: error.message || "Failed to update e-book" });
     }

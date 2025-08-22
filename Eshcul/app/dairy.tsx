@@ -13,16 +13,18 @@ import { MaterialCommunityIcons, FontAwesome5, Entypo } from '@expo/vector-icons
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
-
-import {Api_url} from './config/config.js'
+import {Api_url} from '../app/config/config';
 
 export default function DiaryScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [diaryData, setDiaryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
-
-  const formatDate = (date: Date) => date.toISOString().split('T')[0];
+  
+const formatDate = (date: Date) => {
+  // Always format as YYYY-MM-DD (UTC safe)
+  return date.toISOString().split("T")[0];
+};
   const formattedDate = formatDate(selectedDate);
 
   const iconMap: Record<string, JSX.Element> = {
@@ -34,18 +36,20 @@ export default function DiaryScreen() {
   };
 
   const fetchDiary = async (dateStr: string) => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${Api_url}/AddDiary?date=${dateStr}`);
-      const filtered = (res.data || []).filter((entry: any) => entry.date === dateStr);
-      setDiaryData(filtered);
-    } catch (err) {
-      console.error('Fetch diary error:', err);
-      setDiaryData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const res = await axios.get(`${Api_url}/AddDiary`, {
+      params: { date: dateStr }
+    });
+    setDiaryData(res.data || []);
+  } catch (err) {
+    console.error('Fetch diary error:', err);
+    setDiaryData([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchDiary(formattedDate);

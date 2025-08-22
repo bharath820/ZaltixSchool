@@ -16,9 +16,6 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 
-// ✅ Correct Axios import
-import axios from 'axios';
-
 interface AddStockModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -28,45 +25,36 @@ interface AddStockModalProps {
 const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
   const [formData, setFormData] = useState({
     item: '',
-    quantity: '',
+    quantity: 0,
     category: '',
     vendor: '',
     status: 'Available',
-    minStock: '',
+    minStock: 0,
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     const newStock = {
-      item: formData.item,
-      category: formData.category,
-      quantity: parseInt(formData.quantity),
-      minStock: parseInt(formData.minStock),
-      status: formData.status,
-      vendor: formData.vendor,
+      ...formData,
+      quantity: Number(formData.quantity),
+      minStock: Number(formData.minStock),
     };
 
-    try {
-      await axios.post('http://localhost:5000/Addstock', newStock, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      onAddStock(newStock);
-      setFormData({
-        item: '',
-        quantity: '',
-        category: '',
-        vendor: '',
-        status: 'Available',
-        minStock: '',
-      });
-      onClose();
-    } catch (error) {
-      console.error('Error adding stock:', error);
-    }
-  };
+    onAddStock(newStock);
 
+    // reset form
+    setFormData({
+      item: '',
+      quantity: 0,
+      category: '',
+      vendor: '',
+      status: 'Available',
+      minStock: 0,
+    });
+
+    onClose();
+  };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xs max-h-[90vh] overflow-y-auto">
@@ -74,6 +62,7 @@ const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
           <DialogTitle className="text-base">Add New Stock</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Item */}
           <div>
             <Label htmlFor="item">Item Name *</Label>
             <Input
@@ -86,6 +75,8 @@ const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
               required
             />
           </div>
+
+          {/* Category */}
           <div>
             <Label htmlFor="category">Category *</Label>
             <Select
@@ -107,6 +98,8 @@ const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Quantity */}
           <div>
             <Label htmlFor="quantity">Quantity *</Label>
             <Input
@@ -114,12 +107,14 @@ const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
               type="number"
               value={formData.quantity}
               onChange={(e) =>
-                setFormData({ ...formData, quantity: e.target.value })
+                setFormData({ ...formData, quantity: Number(e.target.value) })
               }
               placeholder="Enter quantity"
               required
             />
           </div>
+
+          {/* Minimum Stock */}
           <div>
             <Label htmlFor="minStock">Minimum Stock *</Label>
             <Input
@@ -127,12 +122,14 @@ const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
               type="number"
               value={formData.minStock}
               onChange={(e) =>
-                setFormData({ ...formData, minStock: e.target.value })
+                setFormData({ ...formData, minStock: Number(e.target.value) })
               }
               placeholder="Enter minimum stock level"
               required
             />
           </div>
+
+          {/* Vendor */}
           <div>
             <Label htmlFor="vendor">Vendor</Label>
             <Input
@@ -144,6 +141,8 @@ const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
               placeholder="Enter vendor name"
             />
           </div>
+
+          {/* Status */}
           <div>
             <Label htmlFor="status">Status</Label>
             <Select
@@ -153,7 +152,7 @@ const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
               }
             >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Available">Available</SelectItem>
@@ -162,6 +161,8 @@ const AddStockModal = ({ isOpen, onClose, onAddStock }: AddStockModalProps) => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Buttons */}
           <div className="flex space-x-2">
             <Button type="submit" className="flex-1">
               Add Stock

@@ -35,7 +35,7 @@ const StaffManagement = () => {
 
   const fetchStaffData = async () => {
     try {
-      const res = await axios.get(`${Api_url}/AddStaff`);
+      const res = await axios.get(`${Api_url}/Addstaff`);
       setStaffData(res.data);
     } catch (error) {
       console.error('Failed to fetch staff data:', error);
@@ -44,7 +44,7 @@ const StaffManagement = () => {
 
   const handleAddStaff = async (newStaff: Staff) => {
     try {
-      await axios.post(`${Api_url}/AddStaff`, newStaff);
+      await axios.post(`${Api_url}/Addstaff`, newStaff);
       fetchStaffData();
       setShowAddModal(false);
       toast.success('New staff added!', { autoClose: 1500 });
@@ -57,7 +57,7 @@ const StaffManagement = () => {
   const handleDeleteStaff = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this staff member?")) return;
     try {
-      await axios.delete(`${Api_url}/AddStaff/${id}`);
+      await axios.delete(`${Api_url}/Addstaff/${id}`);
       toast.success('Staff deleted successfully!', { autoClose: 1500 });
       fetchStaffData();
     } catch (error) {
